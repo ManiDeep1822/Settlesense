@@ -37,18 +37,14 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    if "how many transaction" in lowered or "count of transaction" in lowered or "total transactions" in lowered or "in the database" in lowered:
-        cursor.execute("SELECT COUNT(*) as total_count, SUM(amount) as total_gross, SUM(fee) as total_fees, SUM(tax) as total_tax, SUM(net_amount) as total_net FROM transactions")
+    if "exception" in lowered:
+        cursor.execute("SELECT COUNT(*) as exc_count FROM exceptions_log WHERE status = 'UNRESOLVED'")
         row = cursor.fetchone()
-        t_count = row["total_count"] or 0
-        t_gross = row["total_gross"] or 0.0
-        t_fees = row["total_fees"] or 0.0
-        t_tax = row["total_tax"] or 0.0
-        t_net = row["total_net"] or 0.0
+        exc_count = row["exc_count"] or 0
         conn.close()
 
         return {
-            "answer": f"There are currently {t_count} transactions recorded in the settlement database, with a total gross volume of ₹{t_gross:,.2f} (Total MDR fees deducted: ₹{t_fees:,.2f}, Total GST: ₹{t_tax:,.2f}, Net volume: ₹{t_net:,.2f}).",
+            "answer": f"There are currently {exc_count} active, unresolved anomalies recorded in the Exceptions Ledger requiring finance ops attention.",
             "confidence": "HIGH",
             "confidence_score": 1.0,
             "cited_record_ids": [],
@@ -57,7 +53,7 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
             "exception_reason": None
         }
 
-    if "pending payout" in lowered or "pending settlement" in lowered or "total pending" in lowered:
+    if "pending" in lowered or "hold" in lowered:
         cursor.execute("""
             SELECT COUNT(*) as p_count, SUM(amount) as p_gross, SUM(fee) as p_fees, SUM(tax) as p_tax, SUM(net_amount) as p_net 
             FROM transactions 
@@ -81,10 +77,10 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
             "exception_reason": None
         }
 
-    if "matched deposit" in lowered or "summarize deposits" in lowered or "total settled volume" in lowered or "settled payout across all batches" in lowered:
+    if "matched" in lowered or "settled" in lowered or "how much did we settle" in lowered or "settle" in lowered:
         cursor.execute("SELECT COUNT(*) as s_count, SUM(total_amount) as s_gross, SUM(fees_deducted) as s_fees, SUM(tax_deducted) as s_tax, SUM(net_payout) as s_net FROM settlements WHERE status = 'settled'")
         srow = cursor.fetchone()
-        cursor.execute("SELECT COUNT(*) as t_count FROM transactions WHERE status = 'settled'")
+        cursor.execute("SELECT COUNT(*) as t_count, SUM(amount) as t_gross, SUM(fee) as t_fees, SUM(tax) as t_tax, SUM(net_amount) as t_net FROM transactions WHERE status = 'settled'")
         trow = cursor.fetchone()
         s_count = srow["s_count"] or 0
         s_gross = srow["s_gross"] or 0.0
@@ -95,7 +91,7 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
         conn.close()
 
         return {
-            "answer": f"Matched deposit summary: {s_count} settlement batches ({t_count} transactions) have successfully settled. Total gross volume: ₹{s_gross:,.2f}, MDR fees deducted: ₹{s_fees:,.2f}, GST tax: ₹{s_tax:,.2f}, and total net disbursed payout: ₹{s_net:,.2f}.",
+            "answer": f"Settlement summary: {s_count} settlement batches ({t_count} transactions) have successfully settled. Total gross volume: ₹{s_gross:,.2f}, MDR fees deducted: ₹{s_fees:,.2f}, GST tax: ₹{s_tax:,.2f}, and total net disbursed payout: ₹{s_net:,.2f}.",
             "confidence": "HIGH",
             "confidence_score": 0.99,
             "cited_record_ids": [],
@@ -104,29 +100,19 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
             "exception_reason": None
         }
 
-    if "exception" in lowered:
-        cursor.execute("SELECT COUNT(*) as exc_count FROM exceptions_log WHERE status = 'UNRESOLVED'")
-        row = cursor.fetchone()
-        exc_count = row["exc_count"] or 0
-        conn.close()
-
-        return {
-            "answer": f"There are currently {exc_count} active, unresolved anomalies recorded in the Exceptions Ledger requiring finance ops attention.",
-            "confidence": "HIGH",
-            "confidence_score": 1.0,
-            "cited_record_ids": [],
-            "exception_detected": False,
-            "exception_type": None,
-            "exception_reason": None
-        }
-
-    cursor.execute("SELECT COUNT(*) as total_txns, SUM(amount) as total_vol FROM transactions")
+    cursor.execute("SELECT COUNT(*) as total_count, SUM(amount) as total_gross, SUM(fee) as total_fees, SUM(tax) as total_tax, SUM(net_amount) as total_net FROM transactions")
     row = cursor.fetchone()
+    t_count = row["total_count"] or 0
+    t_gross = row["total_gross"] or 0.0
+    t_fees = row["total_fees"] or 0.0
+    t_tax = row["total_tax"] or 0.0
+    t_net = row["total_net"] or 0.0
     conn.close()
+
     return {
-        "answer": f"Settlement ledger aggregate summary: {row['total_txns']} transactions recorded with ₹{row['total_vol'] or 0.0:,.2f} total gross volume.",
+        "answer": f"There are currently {t_count} transactions recorded in the settlement database, with a total gross volume of ₹{t_gross:,.2f} (Total MDR fees deducted: ₹{t_fees:,.2f}, Total GST: ₹{t_tax:,.2f}, Net volume: ₹{t_net:,.2f}).",
         "confidence": "HIGH",
-        "confidence_score": 0.95,
+        "confidence_score": 1.0,
         "cited_record_ids": [],
         "exception_detected": False,
         "exception_type": None,

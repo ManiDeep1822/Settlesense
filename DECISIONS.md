@@ -46,7 +46,7 @@
 ### Decision 6: Automated Accuracy Benchmark Test Harness
 * **Date**: 2026-08-22
 * **Context**: Judges require empirical proof of accuracy across a labeled test suite.
-* **Decision**: Build `run_accuracy_harness.py` with 42 ground-truth test cases across 14 categories, scoring not only correct answers but also "Correctly Declined" non-existent and out-of-scope queries. Expose this directly in the UI with a "Run Benchmark" trigger.
+* **Decision**: Build `run_accuracy_harness.py` with 45 ground-truth test cases across 14 categories, scoring not only correct answers but also "Correctly Declined" non-existent and out-of-scope queries. Expose this directly in the UI with a "Run Benchmark" trigger.
 * **Rationale**: Provides transparent, reproducible evidence of the system's performance on demand.
 
 ---
@@ -68,4 +68,5 @@
   1. `GREETING_OR_SMALL_TALK` and `OUT_OF_SCOPE`: Bypass database retrieval entirely; return a clear informational response or polite scope boundary without citations or a verified badge.
   2. `AGGREGATE_QUERY`: Route directly to deterministic SQL aggregate queries (`COUNT(*)`, `SUM(amount)`, `SUM(net_payout)`) against SQLite to return mathematically exact counts and volumes across batches.
   3. `ENTITY_LOOKUP`: Proceed with exact entity extraction + hybrid vector search.
+* **Follow-up Refinement**: Broadened aggregate classification patterns to catch all natural variations ("How many transactions are there totally?", "Give me a count of settled orders", "Sum up all matched transactions") and added dedicated regression tests to `test_cases.json`.
 * **Rationale**: Prevents hallucinated transaction citations on general conversational inputs while ensuring financial aggregation questions are answered with mathematical exactness from SQLite ledger tables.

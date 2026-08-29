@@ -143,40 +143,49 @@ def classify_query_intent(query: str) -> str:
     greetings = {
         "hello", "hi", "hey", "hola", "greetings", "good morning", "good afternoon",
         "good evening", "thanks", "thank you", "help", "who are you", "what can you do",
-        "what are you", "test", "testing", "hi there", "hello there", "can you help me"
+        "what are you", "test", "testing", "hi there", "hello there", "can you help me",
+        "hey there", "good day", "sup", "yo"
     }
 
     finance_keywords = [
         "settle", "transaction", "payout", "deposit", "fee", "tax", "refund", "hold",
         "decline", "utr", "bank", "dispute", "order", "batch", "ledger", "gross",
-        "net", "amount", "chargeback", "balance", "reconciliation"
+        "net", "amount", "chargeback", "balance", "reconciliation", "volume", "matched"
     ]
     has_finance_terms = any(fk in lowered for fk in finance_keywords)
 
     stripped_punct = re.sub(r'[^\w\s]', '', lowered).strip()
-    if (stripped_punct in greetings or any(lowered.startswith(g) for g in ["hello", "hi ", "hey "])) and not has_finance_terms:
+    if (stripped_punct in greetings or any(lowered.startswith(g) for g in ["hello", "hi ", "hey ", "thanks", "thank you"])) and not has_finance_terms:
         return "GREETING_OR_SMALL_TALK"
 
     aggregate_patterns = [
-        r'\bhow many (?:transactions|records|settlements|orders|exceptions|deposits)\b',
-        r'\bcount (?:of )?(?:transactions|settlements|records|orders|exceptions)\b',
-        r'\btotal (?:transactions|settled volume|payout|pending|fees|deductions|deposits|gross|net)\b',
-        r'\bwhat(?: is|\'s)? (?:my )?total pending\b',
-        r'\bpending payout (?:for |across )?\b',
-        r'\bsummarize (?:today\'s |all )?matched (?:deposits|settlements|payouts)?\b',
-        r'\bsummarize deposits\b',
-        r'\baverage (?:ticket|transaction|amount|latency)\b',
+        r'\bhow many\b',
+        r'\bhow much (?:did we|was|is|have been|were)\b',
+        r'\bcount (?:of )?',
+        r'\bgive me a count\b',
+        r'\bsum (?:up |of )?',
+        r'\btotal (?:of )?',
+        r'\bwhat(?: is|\'s)? (?:the |our |my )?total\b',
+        r'\bwhat(?: is|\'s)? (?:the |our |my )?pending\b',
+        r'\bpending payout\b',
+        r'\bsummarize\b',
+        r'\baverage\b',
         r'\breconciliation rate\b',
-        r'\bhow much (?:is pending|was settled|were fees)\b'
+        r'\boverall (?:count|volume|settlement|transactions)\b',
+        r'\btotally\b',
+        r'\bin total\b'
     ]
-    for pattern in aggregate_patterns:
-        if re.search(pattern, lowered):
-            return "AGGREGATE_QUERY"
+    
+    is_aggregate = any(re.search(pat, lowered) for pat in aggregate_patterns)
+    if is_aggregate and has_finance_terms:
+        return "AGGREGATE_QUERY"
+    if is_aggregate and not any(ook in lowered for ook in ["weather", "president", "recipe", "joke", "code"]):
+        return "AGGREGATE_QUERY"
 
     out_of_scope_keywords = [
         "weather", "president", "recipe", "joke", "movie", "song", "sports",
         "cricket", "football", "capital of", "python code", "write a code",
-        "translate", "crypto price", "bitcoin", "stock market"
+        "translate", "crypto price", "bitcoin", "stock market", "who won", "news"
     ]
     if any(ook in lowered for ook in out_of_scope_keywords) and not has_finance_terms:
         return "OUT_OF_SCOPE"

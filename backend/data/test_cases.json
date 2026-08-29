@@ -431,7 +431,7 @@
   {
     "test_id": "TEST-040",
     "category": "intent_aggregate_count",
-    "question": "How many transactions are there in the database?",
+    "question": "How many transactions are there totally?",
     "expected_action": "ANSWER_WITH_REASON",
     "expected_answer_snippet": "transactions",
     "target_txn_id": null,
@@ -459,6 +459,39 @@
     "target_txn_id": null,
     "target_order_ref": null,
     "expected_status": "out_of_scope",
+    "expected_verifier_verdict": "NONE"
+  },
+  {
+    "test_id": "TEST-043",
+    "category": "intent_aggregate_sum",
+    "question": "Sum up all matched transactions",
+    "expected_action": "ANSWER_WITH_REASON",
+    "expected_answer_snippet": "settled",
+    "target_txn_id": null,
+    "target_order_ref": null,
+    "expected_status": "aggregate",
+    "expected_verifier_verdict": "VERIFIED"
+  },
+  {
+    "test_id": "TEST-044",
+    "category": "intent_aggregate_count",
+    "question": "Give me a count of settled orders",
+    "expected_action": "ANSWER_WITH_REASON",
+    "expected_answer_snippet": "settled",
+    "target_txn_id": null,
+    "target_order_ref": null,
+    "expected_status": "aggregate",
+    "expected_verifier_verdict": "VERIFIED"
+  },
+  {
+    "test_id": "TEST-045",
+    "category": "intent_greeting",
+    "question": "Hello",
+    "expected_action": "ANSWER_WITH_REASON",
+    "expected_answer_snippet": "SettleSense",
+    "target_txn_id": null,
+    "target_order_ref": null,
+    "expected_status": "greeting",
     "expected_verifier_verdict": "NONE"
   }
 ]
