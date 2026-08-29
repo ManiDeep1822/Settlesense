@@ -266,6 +266,8 @@ if __name__ == "__main__":
     print(f"  False-Flag Rate                       : {report['verifier_performance']['false_flag_rate_percent']}%")
     print("-" * 60)
     print("DUAL-PATH ENGINE BREAKDOWN:")
+    g = report['engine_breakdown']['gemini']
+    fb = report['engine_breakdown']['fallback']
     print(f"  Gemini 2.5 Flash : {g['total']} of {report['total_tests']} queries | {g['accuracy_percentage']}% accuracy | {g['avg_latency_ms']} ms avg latency")
     print(f"  Fallback Engine  : {fb['total']} of {report['total_tests']} queries | {fb['accuracy_percentage']}% accuracy | {fb['avg_latency_ms']} ms avg latency")
     print("="*60 + "\n")
