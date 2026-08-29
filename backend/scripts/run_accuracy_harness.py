@@ -110,6 +110,7 @@ def run_benchmark(test_cases_path: str = None, pace_seconds: float = 0.0) -> Dic
     verifier_verified_count = 0
     verifier_minor_count = 0
     verifier_flagged_count = 0
+    verifier_no_audit_count = 0
     verifier_agreement_matches = 0
     false_flag_count = 0
 
@@ -161,6 +162,8 @@ def run_benchmark(test_cases_path: str = None, pace_seconds: float = 0.0) -> Dic
             verifier_minor_count += 1
         elif v_verdict == "FLAGGED":
             verifier_flagged_count += 1
+        elif v_verdict == "NONE":
+            verifier_no_audit_count += 1
 
         if (v in ("CORRECT", "CORRECTLY_DECLINED", "PARTIALLY_CORRECT") and v_verdict in ("VERIFIED", "NONE", "MINOR_DISCREPANCY")) or (v == "WRONG" and v_verdict == "FLAGGED"):
             verifier_agreement_matches += 1
@@ -211,6 +214,7 @@ def run_benchmark(test_cases_path: str = None, pace_seconds: float = 0.0) -> Dic
         "verified_count": verifier_verified_count,
         "minor_discrepancy_count": verifier_minor_count,
         "flagged_count": verifier_flagged_count,
+        "no_audit_needed_count": verifier_no_audit_count,
         "agreement_rate_percent": agreement_rate,
         "catch_rate_percent": 100.0,
         "false_flag_rate_percent": false_flag_rate
@@ -254,15 +258,14 @@ if __name__ == "__main__":
     print(f"Average Query Latency: {report['avg_latency_ms']} ms")
     print("-" * 60)
     print("VERIFIER AGENT PERFORMANCE AUDIT:")
-    print(f"  Verified Answers      : {report['verifier_performance']['verified_count']} of {report['total_tests']}")
-    print(f"  Minor Discrepancies   : {report['verifier_performance']['minor_discrepancy_count']}")
-    print(f"  Verifier Flagged (Hold): {report['verifier_performance']['flagged_count']}")
-    print(f"  Agreement Rate        : {report['verifier_performance']['agreement_rate_percent']}%")
-    print(f"  False-Flag Rate       : {report['verifier_performance']['false_flag_rate_percent']}%")
+    print(f"  Verified Answers                      : {report['verifier_performance']['verified_count']} of {report['total_tests']}")
+    print(f"  Minor Discrepancies                   : {report['verifier_performance']['minor_discrepancy_count']}")
+    print(f"  Verifier Flagged (Hold)               : {report['verifier_performance']['flagged_count']}")
+    print(f"  No Audit Needed (Conversational/Scope): {report['verifier_performance']['no_audit_needed_count']}")
+    print(f"  Agreement Rate                        : {report['verifier_performance']['agreement_rate_percent']}%")
+    print(f"  False-Flag Rate                       : {report['verifier_performance']['false_flag_rate_percent']}%")
     print("-" * 60)
     print("DUAL-PATH ENGINE BREAKDOWN:")
-    g = report['engine_breakdown']['gemini']
-    fb = report['engine_breakdown']['fallback']
     print(f"  Gemini 2.5 Flash : {g['total']} of {report['total_tests']} queries | {g['accuracy_percentage']}% accuracy | {g['avg_latency_ms']} ms avg latency")
     print(f"  Fallback Engine  : {fb['total']} of {report['total_tests']} queries | {fb['accuracy_percentage']}% accuracy | {fb['avg_latency_ms']} ms avg latency")
     print("="*60 + "\n")

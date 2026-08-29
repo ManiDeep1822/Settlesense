@@ -41,13 +41,16 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
         cursor.execute("SELECT COUNT(*) as exc_count FROM exceptions_log WHERE status = 'UNRESOLVED'")
         row = cursor.fetchone()
         exc_count = row["exc_count"] or 0
+        cursor.execute("SELECT * FROM transactions WHERE status IN ('exception', 'unmatched', 'declined') LIMIT 3")
+        sample_rows = [dict(r) for r in cursor.fetchall()]
         conn.close()
 
         return {
             "answer": f"There are currently {exc_count} active, unresolved anomalies recorded in the Exceptions Ledger requiring finance ops attention.",
             "confidence": "HIGH",
             "confidence_score": 1.0,
-            "cited_record_ids": [],
+            "cited_record_ids": [r["id"] for r in sample_rows],
+            "sample_records": sample_rows,
             "exception_detected": False,
             "exception_type": None,
             "exception_reason": None
@@ -65,13 +68,16 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
         p_fees = row["p_fees"] or 0.0
         p_tax = row["p_tax"] or 0.0
         p_net = row["p_net"] or 0.0
+        cursor.execute("SELECT * FROM transactions WHERE status IN ('pending', 'delayed', 'hold') ORDER BY created_at DESC LIMIT 3")
+        sample_rows = [dict(r) for r in cursor.fetchall()]
         conn.close()
 
         return {
             "answer": f"Your total pending payout across all un-settled transactions (pending, delayed, and risk-hold) is ₹{p_net:,.2f} across {p_count} transactions (Gross pending volume: ₹{p_gross:,.2f}, estimated MDR fees: ₹{p_fees:,.2f}, GST: ₹{p_tax:,.2f}).",
             "confidence": "HIGH",
             "confidence_score": 0.99,
-            "cited_record_ids": [],
+            "cited_record_ids": [r["id"] for r in sample_rows],
+            "sample_records": sample_rows,
             "exception_detected": False,
             "exception_type": None,
             "exception_reason": None
@@ -89,13 +95,16 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
         m_fees = mrow["m_fees"] or 0.0
         m_tax = mrow["m_tax"] or 0.0
         m_net = mrow["m_net"] or 0.0
+        cursor.execute("SELECT * FROM transactions WHERE status = 'matched' ORDER BY created_at DESC LIMIT 3")
+        sample_rows = [dict(r) for r in cursor.fetchall()]
         conn.close()
 
         return {
             "answer": f"Matched transactions summary: There are {m_count} reconciled matched transactions in the ledger totaling ₹{m_gross:,.2f} in gross volume (MDR fees: ₹{m_fees:,.2f}, GST tax: ₹{m_tax:,.2f}, Net payout: ₹{m_net:,.2f}).",
             "confidence": "HIGH",
             "confidence_score": 0.99,
-            "cited_record_ids": [],
+            "cited_record_ids": [r["id"] for r in sample_rows],
+            "sample_records": sample_rows,
             "exception_detected": False,
             "exception_type": None,
             "exception_reason": None
@@ -112,13 +121,16 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
         s_tax = srow["s_tax"] or 0.0
         s_net = srow["s_net"] or 0.0
         t_count = trow["t_count"] or 0
+        cursor.execute("SELECT * FROM settlements WHERE status = 'settled' ORDER BY settlement_date DESC LIMIT 3")
+        sample_rows = [dict(r) for r in cursor.fetchall()]
         conn.close()
 
         return {
             "answer": f"Settlement batch summary: {s_count} settlement batches containing {t_count} settled transactions have successfully disbursed. Total gross volume: ₹{s_gross:,.2f}, MDR fees deducted: ₹{s_fees:,.2f}, GST tax: ₹{s_tax:,.2f}, and total net disbursed payout: ₹{s_net:,.2f}.",
             "confidence": "HIGH",
             "confidence_score": 0.99,
-            "cited_record_ids": [],
+            "cited_record_ids": [r["settlement_id"] for r in sample_rows],
+            "sample_records": sample_rows,
             "exception_detected": False,
             "exception_type": None,
             "exception_reason": None
@@ -131,13 +143,16 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
     t_fees = row["total_fees"] or 0.0
     t_tax = row["total_tax"] or 0.0
     t_net = row["total_net"] or 0.0
+    cursor.execute("SELECT * FROM transactions ORDER BY created_at DESC LIMIT 3")
+    sample_rows = [dict(r) for r in cursor.fetchall()]
     conn.close()
 
     return {
         "answer": f"There are currently {t_count} transactions recorded in the settlement database, with a total gross volume of ₹{t_gross:,.2f} (Total MDR fees deducted: ₹{t_fees:,.2f}, Total GST: ₹{t_tax:,.2f}, Net volume: ₹{t_net:,.2f}).",
         "confidence": "HIGH",
         "confidence_score": 1.0,
-        "cited_record_ids": [],
+        "cited_record_ids": [r["id"] for r in sample_rows],
+        "sample_records": sample_rows,
         "exception_detected": False,
         "exception_type": None,
         "exception_reason": None
@@ -438,6 +453,41 @@ def process_settlement_query(query: str, merchant_id: Optional[str] = None) -> Q
         agg_result = handle_aggregate_query(query)
         v_audit = verify_aggregate_answer(query, agg_result["answer"])
         latency_ms = round((time.time() - start_time) * 1000, 2)
+
+        sample_records = agg_result.get("sample_records", [])
+        valid_cited_records = []
+        for r in sample_records:
+            if "amount" in r and "id" in r:
+                valid_cited_records.append(CitedRecord(
+                    id=r["id"],
+                    order_ref=r.get("order_ref", ""),
+                    amount=float(r.get("amount", 0.0)),
+                    status=r.get("status", "unknown"),
+                    settlement_date=r.get("settlement_date"),
+                    bank_ref=r.get("bank_ref"),
+                    settlement_id=r.get("settlement_id"),
+                    fee=float(r.get("fee", 0.0)),
+                    tax=float(r.get("tax", 0.0)),
+                    net_amount=float(r.get("net_amount", 0.0)),
+                    failure_reason=r.get("failure_reason"),
+                    refund_amount=float(r.get("refund_amount", 0.0))
+                ))
+            elif "total_amount" in r and "settlement_id" in r:
+                valid_cited_records.append(CitedRecord(
+                    id=r["settlement_id"],
+                    order_ref=r.get("settlement_id", ""),
+                    amount=float(r.get("total_amount", 0.0)),
+                    status=r.get("status", "unknown"),
+                    settlement_date=r.get("settlement_date"),
+                    bank_ref=r.get("bank_utr"),
+                    settlement_id=r.get("settlement_id"),
+                    fee=float(r.get("fees_deducted", 0.0)),
+                    tax=float(r.get("tax_deducted", 0.0)),
+                    net_amount=float(r.get("net_payout", 0.0)),
+                    failure_reason=r.get("failure_reason"),
+                    refund_amount=0.0
+                ))
+
         return QueryResponse(
             answer=agg_result["answer"],
             confidence=agg_result.get("confidence", "HIGH"),
@@ -448,8 +498,8 @@ def process_settlement_query(query: str, merchant_id: Optional[str] = None) -> Q
             verifier_verdict=v_audit.get("verdict", "VERIFIED"),
             verifier_notes=v_audit.get("verification_notes", "Deterministic SQL aggregation verified against live SQLite database."),
             discrepancies=v_audit.get("discrepancies", []),
-            cited_records=[],
-            cited_record_ids=[],
+            cited_records=valid_cited_records,
+            cited_record_ids=agg_result.get("cited_record_ids", []),
             exception_detected=agg_result.get("exception_detected", False),
             exception_type=agg_result.get("exception_type"),
             exception_reason=agg_result.get("exception_reason"),

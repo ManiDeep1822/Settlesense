@@ -1,19 +1,19 @@
 {
-  "id": "RUN-7098273C",
-  "run_timestamp": "2026-08-29 20:54:44",
+  "id": "RUN-71696648",
+  "run_timestamp": "2026-08-29 20:59:45",
   "total_tests": 45,
-  "passed": 24,
+  "passed": 21,
   "correctly_declined": 9,
-  "partially_passed": 9,
+  "partially_passed": 12,
   "failed": 3,
-  "accuracy_percentage": 83.33,
-  "avg_latency_ms": 1377.87,
+  "accuracy_percentage": 80.0,
+  "avg_latency_ms": 1295.56,
   "verifier_performance": {
     "total_audits": 45,
-    "verified_count": 42,
+    "verified_count": 35,
     "minor_discrepancy_count": 0,
-    "flagged_count": 0,
-    "agreement_rate_percent": 93.33,
+    "flagged_count": 7,
+    "agreement_rate_percent": 82.22,
     "catch_rate_percent": 100.0,
     "false_flag_rate_percent": 0.0
   },
@@ -28,11 +28,11 @@
     },
     "fallback": {
       "total": 45,
-      "passed": 24,
+      "passed": 21,
       "correctly_declined": 9,
       "failed": 3,
-      "accuracy_percentage": 83.33,
-      "avg_latency_ms": 1377.87
+      "accuracy_percentage": 80.0,
+      "avg_latency_ms": 1295.56
     }
   },
   "category_breakdown": {
@@ -45,9 +45,9 @@
     },
     "matched_lookup": {
       "total": 5,
-      "passed": 1,
+      "passed": 0,
       "correctly_declined": 0,
-      "partially_passed": 3,
+      "partially_passed": 4,
       "failed": 1
     },
     "exception_handling": {
@@ -101,16 +101,16 @@
     },
     "aggregation_matched": {
       "total": 1,
-      "passed": 0,
+      "passed": 1,
       "correctly_declined": 0,
-      "partially_passed": 1,
+      "partially_passed": 0,
       "failed": 0
     },
     "bank_utr_lookup": {
       "total": 2,
-      "passed": 2,
+      "passed": 0,
       "correctly_declined": 0,
-      "partially_passed": 0,
+      "partially_passed": 2,
       "failed": 0
     },
     "verifier_accurate_grounding": {
@@ -164,9 +164,9 @@
     },
     "verifier_batch_payout_attribution": {
       "total": 1,
-      "passed": 1,
+      "passed": 0,
       "correctly_declined": 0,
-      "partially_passed": 0,
+      "partially_passed": 1,
       "failed": 0
     },
     "intent_greeting": {
@@ -213,7 +213,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "zip code",
       "actual_answer": "Order ORD-4521 (Transaction TXN-8894-4521, \u20b91,450.00) did not settle because it was declined before capture. Reason: Billing zip code mismatch flagged by processor; declined by issuing bank. No settlement funds were collected or queued for disbursement.",
       "confidence": "HIGH",
@@ -223,7 +223,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1438.41,
+      "latency_ms": 1626.67,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -233,7 +233,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "PARTIALLY_CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "settled",
       "actual_answer": "Based on retrieved record TXN-849201A, amount is \u20b9124,500.00 with status 'matched'.",
       "confidence": "MEDIUM",
@@ -243,7 +243,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1794.7,
+      "latency_ms": 1490.59,
       "notes": "Partial match on details or citations"
     },
     {
@@ -253,7 +253,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "PARTIALLY_CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "refund",
       "actual_answer": "Based on retrieved record TXN-849202B, amount is \u20b98,430.50 with status 'exception'.",
       "confidence": "MEDIUM",
@@ -263,7 +263,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1240.91,
+      "latency_ms": 1480.45,
       "notes": "Partial match on details or citations"
     },
     {
@@ -273,7 +273,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "pending",
       "actual_answer": "Based on retrieved record TXN-849203C, amount is \u20b945,000.00 with status 'pending'.",
       "confidence": "MEDIUM",
@@ -283,7 +283,7 @@
       "cited_record_ids": [
         "TXN-849203C"
       ],
-      "latency_ms": 2155.29,
+      "latency_ms": 1470.44,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -293,7 +293,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "unmatched",
       "actual_answer": "Order ORD-811-F (Transaction TXN-849204D, \u20b99,200.75) is flagged as unmatched. Nodal bank statement shows amount mismatch or missing payment capture record.",
       "confidence": "MEDIUM",
@@ -303,7 +303,7 @@
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 1723.67,
+      "latency_ms": 1449.43,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -312,18 +312,18 @@
       "question": "Check bank reference and payout for ORD-229-K",
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "WRONG",
-      "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_verdict": "FLAGGED",
+      "verifier_notes": "Amount discrepancy: claimed amount \u20b999,821.00 does not match ledger record (Gross: \u20b9210,000.00, Net: \u20b9205,044.00)",
       "expected_answer_snippet": "1415",
-      "actual_answer": "Order ORD-229-K (Transaction TXN-849205E, \u20b9210,000.00) was settled to your registered bank account under Bank Reference / UTR: WF-99821-AA on 2023-10-23.",
-      "confidence": "HIGH",
+      "actual_answer": "\u26a0 Verification Notice: The independent Verifier Agent flagged a potential ledger inconsistency (Amount discrepancy: claimed amount \u20b999,821.00 does not match ledger record (Gross: \u20b9210,000.00, Net: \u20b9205,044.00)). This inquiry has been routed to the Exceptions Ledger for manual finance ops review.",
+      "confidence": "LOW",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [
         "TXN-849205E"
       ],
-      "latency_ms": 2013.11,
+      "latency_ms": 1945.01,
       "notes": "Answer contradicted record or missed expected facts"
     },
     {
@@ -333,7 +333,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "risk hold",
       "actual_answer": "Order ORD-9921 (Transaction TXN-7701-9921, \u20b918,500.00) is currently delayed. Failure reason / hold: Risk hold triggered: High velocity ticket size exceeding standard merchant threshold. Expected settlement date is deferred to 2023-10-26.",
       "confidence": "HIGH",
@@ -343,7 +343,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 1514.49,
+      "latency_ms": 1537.62,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -353,7 +353,7 @@
       "expected_action": "DECLINE_HONESTLY",
       "verdict": "CORRECTLY_DECLINED",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
       "expected_answer_snippet": "no matching",
       "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-99999. Please verify the identifier or check if the transaction is pending ingestion.",
       "confidence": "UNANSWERABLE",
@@ -361,7 +361,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1134.96,
+      "latency_ms": 1657.12,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -371,7 +371,7 @@
       "expected_action": "DECLINE_HONESTLY",
       "verdict": "CORRECTLY_DECLINED",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
       "expected_answer_snippet": "no matching",
       "actual_answer": "I reviewed the settlement database but found no matching entry for Transaction TXN-000000-FAKE. Please verify the identifier or check if the transaction is pending ingestion.",
       "confidence": "UNANSWERABLE",
@@ -379,7 +379,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1753.93,
+      "latency_ms": 1519.73,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -389,7 +389,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "2490",
       "actual_answer": "For Order ORD-992-B (Transaction TXN-849201A, Gross: \u20b9124,500.00), the MDR fee deducted is \u20b92,490.00 plus 18% GST tax of \u20b9448.20, resulting in a net payout of \u20b9121,561.80.",
       "confidence": "HIGH",
@@ -399,7 +399,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 2149.24,
+      "latency_ms": 1644.95,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -409,15 +409,15 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Deterministic SQL aggregation verified against live SQLite database.",
+      "verifier_notes": "Independent verifier query confirmed 262 settled batches and 275 settled transactions in SQLite.",
       "expected_answer_snippet": "settled",
-      "actual_answer": "Settlement summary: 262 settlement batches (0 transactions) have successfully settled. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
+      "actual_answer": "Settlement batch summary: 262 settlement batches containing 275 settled transactions have successfully disbursed. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
       "confidence": "HIGH",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 3.46,
+      "latency_ms": 1.76,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -425,58 +425,58 @@
       "category": "aggregation_matched",
       "question": "Summarize today's matched deposits",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "PARTIALLY_CORRECT",
+      "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Deterministic SQL aggregation verified against live SQLite database.",
+      "verifier_notes": "Independent verifier query confirmed 275 matched transactions (\u20b910,128,999.91) in SQLite.",
       "expected_answer_snippet": "matched",
-      "actual_answer": "Settlement summary: 262 settlement batches (0 transactions) have successfully settled. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
+      "actual_answer": "Matched transactions summary: There are 275 reconciled matched transactions in the ledger totaling \u20b910,128,999.91 in gross volume (MDR fees: \u20b9184,650.03, GST tax: \u20b933,237.05, Net payout: \u20b99,911,112.83).",
       "confidence": "HIGH",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 2.21,
-      "notes": "Partial match on details or citations"
+      "latency_ms": 1.22,
+      "notes": "Accurate reasoning grounded in cited database records"
     },
     {
       "test_id": "TEST-013",
       "category": "bank_utr_lookup",
       "question": "What is the UTR for transaction TXN-849201A?",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "CORRECT",
-      "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verdict": "PARTIALLY_CORRECT",
+      "verifier_verdict": "FLAGGED",
+      "verifier_notes": "Amount discrepancy: claimed amount \u20b988,392.00 does not match ledger record (Gross: \u20b9124,500.00, Net: \u20b9121,561.80)",
       "expected_answer_snippet": "chase-88392-xx",
-      "actual_answer": "Order ORD-992-B (Transaction TXN-849201A, \u20b9124,500.00) was settled to your registered bank account under Bank Reference / UTR: CHASE-88392-XX on 2023-10-24.",
-      "confidence": "HIGH",
+      "actual_answer": "\u26a0 Verification Notice: The independent Verifier Agent flagged a potential ledger inconsistency (Amount discrepancy: claimed amount \u20b988,392.00 does not match ledger record (Gross: \u20b9124,500.00, Net: \u20b9121,561.80)). This inquiry has been routed to the Exceptions Ledger for manual finance ops review.",
+      "confidence": "LOW",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1841.55,
-      "notes": "Accurate reasoning grounded in cited database records"
+      "latency_ms": 1187.02,
+      "notes": "Partial match on details or citations"
     },
     {
       "test_id": "TEST-014",
       "category": "matched_lookup",
       "question": "Find settlement details for SETTLE-20231024-001",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "CORRECT",
-      "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verdict": "PARTIALLY_CORRECT",
+      "verifier_verdict": "FLAGGED",
+      "verifier_notes": "Amount discrepancy: claimed amount \u20b988,392.00 does not match ledger record (Gross: \u20b9124,500.00, Net: \u20b9121,561.80)",
       "expected_answer_snippet": "121,561",
-      "actual_answer": "Settlement Batch SETTLE-20231024-001 was processed on 2023-10-24 with status 'settled'. Total batch gross: \u20b9124,500.00, MDR fees: \u20b92,490.00, GST tax: \u20b9448.20, Net disbursed payout: \u20b9121,561.80. Bank UTR: CHASE-88392-XX.",
-      "confidence": "HIGH",
+      "actual_answer": "\u26a0 Verification Notice: The independent Verifier Agent flagged a potential ledger inconsistency (Amount discrepancy: claimed amount \u20b988,392.00 does not match ledger record (Gross: \u20b9124,500.00, Net: \u20b9121,561.80)). This inquiry has been routed to the Exceptions Ledger for manual finance ops review.",
+      "confidence": "LOW",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 1637.41,
-      "notes": "Accurate reasoning grounded in cited database records"
+      "latency_ms": 1900.77,
+      "notes": "Partial match on details or citations"
     },
     {
       "test_id": "TEST-015",
@@ -485,7 +485,7 @@
       "expected_action": "DECLINE_HONESTLY",
       "verdict": "CORRECTLY_DECLINED",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
       "expected_answer_snippet": "no matching",
       "actual_answer": "I reviewed the settlement database but found no matching entry for Settlement SETTLE-999999. Please verify the identifier or check if the transaction is pending ingestion.",
       "confidence": "UNANSWERABLE",
@@ -493,7 +493,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1393.74,
+      "latency_ms": 1413.73,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -503,7 +503,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "WRONG",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
       "expected_answer_snippet": "declined",
       "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-1049-D. Please verify the identifier or check if the transaction is pending ingestion.",
       "confidence": "UNANSWERABLE",
@@ -511,7 +511,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1911.08,
+      "latency_ms": 1916.32,
       "notes": "Answer contradicted record or missed expected facts"
     },
     {
@@ -521,7 +521,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "5.22",
       "actual_answer": "For Order ORD-4521 (Transaction TXN-8894-4521, Gross: \u20b91,450.00), the MDR fee deducted is \u20b929.00 plus 18% GST tax of \u20b95.22, resulting in a net payout of \u20b91,415.78.",
       "confidence": "HIGH",
@@ -531,7 +531,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1439.0,
+      "latency_ms": 1409.22,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -541,7 +541,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "delayed",
       "actual_answer": "Order ORD-9921 (Transaction TXN-7701-9921, \u20b918,500.00) is currently delayed. Failure reason / hold: Risk hold triggered: High velocity ticket size exceeding standard merchant threshold. Expected settlement date is deferred to 2023-10-26.",
       "confidence": "HIGH",
@@ -551,7 +551,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 1530.18,
+      "latency_ms": 1996.81,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -561,7 +561,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "PARTIALLY_CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "refund",
       "actual_answer": "Based on retrieved record TXN-849202B, amount is \u20b98,430.50 with status 'exception'.",
       "confidence": "MEDIUM",
@@ -571,7 +571,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1839.1,
+      "latency_ms": 1935.97,
       "notes": "Partial match on details or citations"
     },
     {
@@ -581,7 +581,7 @@
       "expected_action": "DECLINE_HONESTLY",
       "verdict": "CORRECTLY_DECLINED",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
       "expected_answer_snippet": "no matching",
       "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-777-MISSING. Please verify the identifier or check if the transaction is pending ingestion.",
       "confidence": "UNANSWERABLE",
@@ -589,7 +589,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1754.32,
+      "latency_ms": 1566.39,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -599,7 +599,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "PARTIALLY_CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "121561",
       "actual_answer": "Based on retrieved record TXN-849201A, amount is \u20b9124,500.00 with status 'matched'.",
       "confidence": "MEDIUM",
@@ -609,7 +609,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1522.88,
+      "latency_ms": 1150.33,
       "notes": "Partial match on details or citations"
     },
     {
@@ -619,7 +619,7 @@
       "expected_action": "DECLINE_HONESTLY",
       "verdict": "CORRECTLY_DECLINED",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
       "expected_answer_snippet": "no matching",
       "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-0000. Please verify the identifier or check if the transaction is pending ingestion.",
       "confidence": "UNANSWERABLE",
@@ -627,7 +627,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1919.23,
+      "latency_ms": 1891.69,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -635,20 +635,20 @@
       "category": "bank_utr_lookup",
       "question": "Find UTR reference for settlement SETTLE-20231024-001",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "CORRECT",
-      "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verdict": "PARTIALLY_CORRECT",
+      "verifier_verdict": "FLAGGED",
+      "verifier_notes": "Amount discrepancy: claimed amount \u20b988,392.00 does not match ledger record (Gross: \u20b9124,500.00, Net: \u20b9121,561.80)",
       "expected_answer_snippet": "chase-88392-xx",
-      "actual_answer": "Settlement Batch SETTLE-20231024-001 was processed on 2023-10-24 with status 'settled'. Total batch gross: \u20b9124,500.00, MDR fees: \u20b92,490.00, GST tax: \u20b9448.20, Net disbursed payout: \u20b9121,561.80. Bank UTR: CHASE-88392-XX.",
-      "confidence": "HIGH",
+      "actual_answer": "\u26a0 Verification Notice: The independent Verifier Agent flagged a potential ledger inconsistency (Amount discrepancy: claimed amount \u20b988,392.00 does not match ledger record (Gross: \u20b9124,500.00, Net: \u20b9121,561.80)). This inquiry has been routed to the Exceptions Ledger for manual finance ops review.",
+      "confidence": "LOW",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 1851.54,
-      "notes": "Accurate reasoning grounded in cited database records"
+      "latency_ms": 1543.41,
+      "notes": "Partial match on details or citations"
     },
     {
       "test_id": "TEST-024",
@@ -657,7 +657,7 @@
       "expected_action": "DECLINE_HONESTLY",
       "verdict": "CORRECTLY_DECLINED",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
       "expected_answer_snippet": "no matching",
       "actual_answer": "I reviewed the settlement database but found no matching entry for Bank reference FAKE-UTR-999. Please verify the identifier or check if the transaction is pending ingestion.",
       "confidence": "UNANSWERABLE",
@@ -665,7 +665,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1557.11,
+      "latency_ms": 1734.9,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -674,18 +674,18 @@
       "question": "Why is bank ref CITI-11234-ZZ unresolved?",
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "PARTIALLY_CORRECT",
-      "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_verdict": "FLAGGED",
+      "verifier_notes": "Amount discrepancy: claimed amount \u20b911,234.00 not found in retrieved ledger records",
       "expected_answer_snippet": "unmatched",
-      "actual_answer": "Order ORD-811-F (Transaction TXN-849204D, \u20b99,200.75) was settled to your registered bank account under Bank Reference / UTR: CITI-11234-ZZ on 2023-10-23.",
-      "confidence": "HIGH",
+      "actual_answer": "\u26a0 Verification Notice: The independent Verifier Agent flagged a potential ledger inconsistency (Amount discrepancy: claimed amount \u20b911,234.00 not found in retrieved ledger records). This inquiry has been routed to the Exceptions Ledger for manual finance ops review.",
+      "confidence": "LOW",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 1431.72,
+      "latency_ms": 1533.8,
       "notes": "Partial match on details or citations"
     },
     {
@@ -695,7 +695,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "PARTIALLY_CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "2000",
       "actual_answer": "Based on retrieved record TXN-849202B, amount is \u20b98,430.50 with status 'exception'.",
       "confidence": "MEDIUM",
@@ -705,7 +705,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 2092.88,
+      "latency_ms": 1546.06,
       "notes": "Partial match on details or citations"
     },
     {
@@ -715,7 +715,7 @@
       "expected_action": "DECLINE_HONESTLY",
       "verdict": "CORRECTLY_DECLINED",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
       "expected_answer_snippet": "no matching",
       "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-123456. Please verify the identifier or check if the transaction is pending ingestion.",
       "confidence": "UNANSWERABLE",
@@ -723,7 +723,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 2152.08,
+      "latency_ms": 1218.02,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -733,7 +733,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "declined",
       "actual_answer": "Order ORD-4521 (Transaction TXN-8894-4521, \u20b91,450.00) did not settle because it was declined before capture. Reason: Billing zip code mismatch flagged by processor; declined by issuing bank. No settlement funds were collected or queued for disbursement.",
       "confidence": "HIGH",
@@ -743,7 +743,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 2005.1,
+      "latency_ms": 1840.39,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -753,7 +753,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "PARTIALLY_CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "2023-10-24",
       "actual_answer": "Based on retrieved record TXN-849201A, amount is \u20b9124,500.00 with status 'matched'.",
       "confidence": "MEDIUM",
@@ -763,7 +763,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1326.09,
+      "latency_ms": 1228.37,
       "notes": "Partial match on details or citations"
     },
     {
@@ -773,7 +773,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "pending",
       "actual_answer": "Based on retrieved record TXN-849203C, amount is \u20b945,000.00 with status 'pending'.",
       "confidence": "MEDIUM",
@@ -783,7 +783,7 @@
       "cited_record_ids": [
         "TXN-849203C"
       ],
-      "latency_ms": 1967.53,
+      "latency_ms": 2252.15,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -793,7 +793,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "1,450",
       "actual_answer": "For Order ORD-4521 (Transaction TXN-8894-4521, Gross: \u20b91,450.00), the MDR fee deducted is \u20b929.00 plus 18% GST tax of \u20b95.22, resulting in a net payout of \u20b91,415.78.",
       "confidence": "HIGH",
@@ -803,7 +803,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1918.71,
+      "latency_ms": 1883.63,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -813,7 +813,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "risk hold",
       "actual_answer": "Order ORD-9921 (Transaction TXN-7701-9921, \u20b918,500.00) is currently delayed. Failure reason / hold: Risk hold triggered: High velocity ticket size exceeding standard merchant threshold. Expected settlement date is deferred to 2023-10-26.",
       "confidence": "HIGH",
@@ -823,7 +823,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 2257.13,
+      "latency_ms": 1307.28,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -833,7 +833,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "8,231",
       "actual_answer": "For Order ORD-104-C (Transaction TXN-849202B, Gross: \u20b98,430.50), the MDR fee deducted is \u20b9168.61 plus 18% GST tax of \u20b930.35, resulting in a net payout of \u20b98,231.54.",
       "confidence": "HIGH",
@@ -843,7 +843,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1431.87,
+      "latency_ms": 1828.65,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -853,7 +853,7 @@
       "expected_action": "DECLINE_HONESTLY",
       "verdict": "CORRECTLY_DECLINED",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
       "expected_answer_snippet": "no matching",
       "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-55555. Please verify the identifier or check if the transaction is pending ingestion.",
       "confidence": "UNANSWERABLE",
@@ -861,7 +861,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1436.88,
+      "latency_ms": 1345.92,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -870,18 +870,18 @@
       "question": "Verify why bank UTR CITI-11234-ZZ was not marked settled in statement reconciliation",
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "PARTIALLY_CORRECT",
-      "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_verdict": "FLAGGED",
+      "verifier_notes": "Amount discrepancy: claimed amount \u20b911,234.00 not found in retrieved ledger records",
       "expected_answer_snippet": "unmatched",
-      "actual_answer": "Order ORD-811-F (Transaction TXN-849204D, \u20b99,200.75) was settled to your registered bank account under Bank Reference / UTR: CITI-11234-ZZ on 2023-10-23.",
-      "confidence": "HIGH",
+      "actual_answer": "\u26a0 Verification Notice: The independent Verifier Agent flagged a potential ledger inconsistency (Amount discrepancy: claimed amount \u20b911,234.00 not found in retrieved ledger records). This inquiry has been routed to the Exceptions Ledger for manual finance ops review.",
+      "confidence": "LOW",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 1530.77,
+      "latency_ms": 1284.85,
       "notes": "Partial match on details or citations"
     },
     {
@@ -891,7 +891,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
       "expected_answer_snippet": "8,231",
       "actual_answer": "For Order ORD-104-C (Transaction TXN-849202B, Gross: \u20b98,430.50), the MDR fee deducted is \u20b9168.61 plus 18% GST tax of \u20b930.35, resulting in a net payout of \u20b98,231.54.",
       "confidence": "HIGH",
@@ -901,7 +901,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 2068.43,
+      "latency_ms": 1768.16,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -911,7 +911,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "WRONG",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 2 retrieved ledger records.",
       "expected_answer_snippet": "18,500",
       "actual_answer": "Based on retrieved record TXN-849201A, amount is \u20b9124,500.00 with status 'matched'.",
       "confidence": "MEDIUM",
@@ -921,7 +921,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1492.63,
+      "latency_ms": 1862.68,
       "notes": "Answer contradicted record or missed expected facts"
     },
     {
@@ -929,20 +929,20 @@
       "category": "verifier_batch_payout_attribution",
       "question": "Which transactions contributed to settlement batch SETTLE-20231024-001 and what was the net batch payout?",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "CORRECT",
-      "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verdict": "PARTIALLY_CORRECT",
+      "verifier_verdict": "FLAGGED",
+      "verifier_notes": "Amount discrepancy: claimed amount \u20b988,392.00 does not match ledger record (Gross: \u20b9124,500.00, Net: \u20b9121,561.80)",
       "expected_answer_snippet": "121,561",
-      "actual_answer": "Settlement Batch SETTLE-20231024-001 was processed on 2023-10-24 with status 'settled'. Total batch gross: \u20b9124,500.00, MDR fees: \u20b92,490.00, GST tax: \u20b9448.20, Net disbursed payout: \u20b9121,561.80. Bank UTR: CHASE-88392-XX.",
-      "confidence": "HIGH",
+      "actual_answer": "\u26a0 Verification Notice: The independent Verifier Agent flagged a potential ledger inconsistency (Amount discrepancy: claimed amount \u20b988,392.00 does not match ledger record (Gross: \u20b9124,500.00, Net: \u20b9121,561.80)). This inquiry has been routed to the Exceptions Ledger for manual finance ops review.",
+      "confidence": "LOW",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 1767.11,
-      "notes": "Accurate reasoning grounded in cited database records"
+      "latency_ms": 1916.15,
+      "notes": "Partial match on details or citations"
     },
     {
       "test_id": "TEST-039",
@@ -959,7 +959,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.07,
+      "latency_ms": 0.09,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -969,7 +969,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Deterministic SQL aggregation verified against live SQLite database.",
+      "verifier_notes": "Independent verifier query confirmed 657 total transactions in SQLite.",
       "expected_answer_snippet": "transactions",
       "actual_answer": "There are currently 657 transactions recorded in the settlement database, with a total gross volume of \u20b923,300,762.62 (Total MDR fees deducted: \u20b9425,773.19, Total GST: \u20b976,639.25, Net volume: \u20b922,798,350.18).",
       "confidence": "HIGH",
@@ -977,7 +977,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1.28,
+      "latency_ms": 3.03,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -987,7 +987,7 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Deterministic SQL aggregation verified against live SQLite database.",
+      "verifier_notes": "Independent verifier query confirmed 153 pending transactions (\u20b94,976,960.43) in SQLite.",
       "expected_answer_snippet": "pending",
       "actual_answer": "Your total pending payout across all un-settled transactions (pending, delayed, and risk-hold) is \u20b94,976,960.43 across 153 transactions (Gross pending volume: \u20b95,084,584.97, estimated MDR fees: \u20b991,207.23, GST: \u20b916,417.31).",
       "confidence": "HIGH",
@@ -995,7 +995,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.75,
+      "latency_ms": 2.44,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -1013,7 +1013,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.27,
+      "latency_ms": 0.55,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -1023,15 +1023,15 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Deterministic SQL aggregation verified against live SQLite database.",
-      "expected_answer_snippet": "settled",
-      "actual_answer": "Settlement summary: 262 settlement batches (0 transactions) have successfully settled. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
+      "verifier_notes": "Independent verifier query confirmed 275 matched transactions (\u20b910,128,999.91) in SQLite.",
+      "expected_answer_snippet": "matched",
+      "actual_answer": "Matched transactions summary: There are 275 reconciled matched transactions in the ledger totaling \u20b910,128,999.91 in gross volume (MDR fees: \u20b9184,650.03, GST tax: \u20b933,237.05, Net payout: \u20b99,911,112.83).",
       "confidence": "HIGH",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.5,
+      "latency_ms": 2.37,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -1041,15 +1041,15 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Deterministic SQL aggregation verified against live SQLite database.",
-      "expected_answer_snippet": "settled",
-      "actual_answer": "Settlement summary: 262 settlement batches (0 transactions) have successfully settled. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
+      "verifier_notes": "Independent verifier query confirmed 262 settled batches and 275 settled transactions in SQLite.",
+      "expected_answer_snippet": "settlement",
+      "actual_answer": "Settlement batch summary: 262 settlement batches containing 275 settled transactions have successfully disbursed. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
       "confidence": "HIGH",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.59,
+      "latency_ms": 4.22,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -1067,7 +1067,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.03,
+      "latency_ms": 0.05,
       "notes": "Accurate reasoning grounded in cited database records"
     }
   ]

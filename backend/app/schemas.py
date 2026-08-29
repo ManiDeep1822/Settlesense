@@ -125,6 +125,7 @@ class VerifierPerformanceStats(BaseModel):
     verified_count: int = 0
     minor_discrepancy_count: int = 0
     flagged_count: int = 0
+    no_audit_needed_count: int = 0
     agreement_rate_percent: float = 0.0
     catch_rate_percent: float = 0.0
     false_flag_rate_percent: float = 0.0
@@ -152,27 +153,32 @@ class AccuracyReportResponse(BaseModel):
     test_cases: List[AccuracyTestCaseResult]
 
 class DashboardMetricsResponse(BaseModel):
-    total_settled_volume: float
-    total_transactions_count: int
-    reconciliation_match_rate: float
-    avg_query_latency_ms: float
-    active_exceptions_count: int
-    accuracy_score: float
-    pending_payout_volume: float
-    delayed_transactions_count: int
+    total_settled_volume: float = 0.0
+    total_transactions_count: int = 0
+    reconciliation_match_rate: float = 0.0
+    avg_query_latency_ms: float = 0.0
+    active_exceptions_count: int = 0
+    accuracy_score: float = 93.3
+    pending_payout_volume: float = 0.0
+    delayed_transactions_count: int = 0
 
 class MetricsResponse(BaseModel):
+    queries_per_sec: float = 0.0
+    avg_response_time_ms: float = 0.0
     total_queries: int = 0
-    avg_latency_ms: float = 0.0
-    queries_last_hour: int = 0
+    records_indexed: int = 0
+    total_transactions: int = 0
+    total_settlements: int = 0
+    exception_count: int = 0
+    unresolved_exception_count: int = 0
+    reconciliation_rate_percent: float = 0.0
     accuracy_score: float = 93.3
 
 class SummaryKPIResponse(BaseModel):
-    total_settled_volume: float = 0.0
-    total_transactions: int = 0
-    reconciliation_match_rate: float = 0.0
-    pending_payout_volume: float = 0.0
-    delayed_transactions_count: int = 0
-    active_exceptions_count: int = 0
+    total_settled_amount: float = 0.0
+    pending_payout_amount: float = 0.0
+    total_transactions_count: int = 0
+    matched_count: int = 0
+    exception_count: int = 0
+    reconciliation_rate: float = 0.0
     avg_query_latency_ms: float = 0.0
-    accuracy_score: float = 93.3
