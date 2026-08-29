@@ -58,113 +58,150 @@ def format_settlement_document(s: Dict[str, Any]) -> str:
         f"Settlement Status: {s['status']}",
         f"Bank UTR: {s.get('bank_utr') or 'None'}",
         f"Destination Account: {s.get('account_number') or 'None'}",
-        f"Cycle Type: {s['cycle_type']}",
-        f"Failure Reason: {s.get('failure_reason') or 'None'}",
-        f"Processed At: {s.get('processed_at') or 'Pending'}",
-        f"Transactions In Batch: {s.get('transaction_count', 0)}"
+        f"Cycle: {s['cycle_type']}",
+        f"Transactions Count: {s.get('transaction_count', 0)}"
     ]
     return " | ".join(parts)
 
-def index_all_records():
-    conn = get_db_connection()
-    collection = get_or_create_collection()
-    
-    try:
-        existing = collection.get()
-        if existing and existing.get("ids"):
-            collection.delete(ids=existing["ids"])
-    except Exception:
-        pass
-
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM transactions")
-    txns = [dict(row) for row in cursor.fetchall()]
-    
-    cursor.execute("SELECT * FROM settlements")
-    settles = [dict(row) for row in cursor.fetchall()]
-    conn.close()
-
-    documents = []
-    ids = []
-    metadatas = []
-
-    for t in txns:
-        doc = format_transaction_document(t)
-        documents.append(doc)
-        ids.append(f"doc_{t['id']}")
-        metadatas.append({
-            "type": "transaction",
-            "id": t["id"],
-            "order_ref": t["order_ref"],
-            "status": t["status"],
-            "amount": float(t["amount"]),
-            "settlement_date": t["settlement_date"] or ""
-        })
-
-    for s in settles:
-        doc = format_settlement_document(s)
-        documents.append(doc)
-        ids.append(f"doc_{s['settlement_id']}")
-        metadatas.append({
-            "type": "settlement",
-            "id": s["settlement_id"],
-            "order_ref": s["settlement_id"],
-            "status": s["status"],
-            "amount": float(s["total_amount"]),
-            "settlement_date": s["settlement_date"] or ""
-        })
-
-    batch_size = 100
-    for i in range(0, len(documents), batch_size):
-        end = min(i + batch_size, len(documents))
-        collection.add(
-            documents=documents[i:end],
-            ids=ids[i:end],
-            metadatas=metadatas[i:end]
-        )
-
-    return len(documents)
-
-def extract_query_entities(query: str) -> Dict[str, Any]:
-    orders = []
-    
-    for m in re.finditer(r'ORD-[\w-]+', query, re.IGNORECASE):
-        orders.append(m.group(0).upper())
-
-    for m in re.finditer(r'(?:order\s*#?\s*|#\s*)(\d+[\w-]*)', query, re.IGNORECASE):
-        val = m.group(1).upper()
-        if not val.startswith("ORD-"):
-            orders.append(f"ORD-{val}")
-        else:
-            orders.append(val)
-
-    txns = [m.group(0).upper() for m in re.finditer(r'TXN-[\w-]+', query, re.IGNORECASE)]
-    settles = [m.group(0).upper() for m in re.finditer(r'SETTLE-[\w-]+', query, re.IGNORECASE)]
-    utrs = [m.group(0).upper() for m in re.finditer(r'(?:[A-Z]{3,5}-\d{4,6}-[A-Z]{2}|CITIN\d+|HDFC\d+|ICIC\d+)', query, re.IGNORECASE)]
-
-    status_keywords = []
-    lowered = query.lower()
-    for s in ["declined", "failed", "pending", "exception", "matched", "unmatched", "delayed", "refund", "hold", "dispute"]:
-        if s in lowered:
-            status_keywords.append(s)
-
-    return {
-        "orders": list(set(orders)),
-        "txns": list(set(txns)),
-        "settles": list(set(settles)),
-        "utrs": list(set(utrs)),
-        "status_keywords": list(set(status_keywords))
+def extract_query_entities(query: str) -> Dict[str, List[str]]:
+    patterns = {
+        "orders": [
+            r'\bORD-[A-Za-z0-9-]+\b',
+            r'\b#(\d{4,8})\b',
+            r'\border\s+(?:#\s*)?([A-Za-z0-9-]+)\b',
+            r'\border\s+number\s+([A-Za-z0-9-]+)\b',
+            r'\border_ref\s*[:=]?\s*([A-Za-z0-9-]+)\b'
+        ],
+        "txns": [
+            r'\bTXN-[A-Za-z0-9-]+\b',
+            r'\btransaction\s+(?:id\s*)?([A-Za-z0-9-]+)\b',
+            r'\bpayment\s+(?:id\s*)?([A-Za-z0-9-]+)\b'
+        ],
+        "settles": [
+            r'\bSETTLE-[A-Za-z0-9-]+\b',
+            r'\bsettlement\s+(?:batch\s*|id\s*)?([A-Za-z0-9-]+)\b',
+            r'\bbatch\s+([A-Za-z0-9-]+)\b'
+        ],
+        "utrs": [
+            r'\b[A-Z]{3,5}-\d{4,6}-[A-Z0-9]+\b',
+            r'\butr\s*[:=]?\s*([A-Za-z0-9-]+)\b',
+            r'\bbank\s+ref\s*[:=]?\s*([A-Za-z0-9-]+)\b'
+        ]
     }
 
-def retrieve_hybrid_context(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
+    found = {
+        "orders": [],
+        "txns": [],
+        "settles": [],
+        "utrs": []
+    }
+
+    for p in patterns["orders"]:
+        for match in re.finditer(p, query, re.IGNORECASE):
+            val = match.group(1) if match.groups() else match.group(0)
+            clean_val = val.strip()
+            if clean_val.isdigit() and not clean_val.startswith("ORD-"):
+                clean_val = f"ORD-{clean_val}"
+            if clean_val.lower() not in [x.lower() for x in found["orders"]]:
+                found["orders"].append(clean_val)
+
+    for p in patterns["txns"]:
+        for match in re.finditer(p, query, re.IGNORECASE):
+            val = match.group(1) if match.groups() else match.group(0)
+            clean_val = val.strip()
+            if clean_val.upper().startswith("TXN-") and clean_val not in found["txns"]:
+                found["txns"].append(clean_val)
+
+    for p in patterns["settles"]:
+        for match in re.finditer(p, query, re.IGNORECASE):
+            val = match.group(1) if match.groups() else match.group(0)
+            clean_val = val.strip()
+            if clean_val.upper().startswith("SETTLE-") and clean_val not in found["settles"]:
+                found["settles"].append(clean_val)
+
+    for p in patterns["utrs"]:
+        for match in re.finditer(p, query, re.IGNORECASE):
+            val = match.group(1) if match.groups() else match.group(0)
+            clean_val = val.strip()
+            if not clean_val.upper().startswith("ORD-") and not clean_val.upper().startswith("TXN-") and not clean_val.upper().startswith("SETTLE-"):
+                if clean_val not in found["utrs"]:
+                    found["utrs"].append(clean_val)
+
+    return found
+
+def classify_query_intent(query: str) -> str:
+    cleaned = query.strip()
+    lowered = cleaned.lower()
+
     entities = extract_query_entities(query)
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    if entities["orders"] or entities["txns"] or entities["settles"] or entities["utrs"]:
+        return "ENTITY_LOOKUP"
+
+    if re.search(r'#\d+|ord[-\s]?\d+|txn[-\s]?\d+|settle[-\s]?\d+', lowered):
+        return "ENTITY_LOOKUP"
+
+    greetings = {
+        "hello", "hi", "hey", "hola", "greetings", "good morning", "good afternoon",
+        "good evening", "thanks", "thank you", "help", "who are you", "what can you do",
+        "what are you", "test", "testing", "hi there", "hello there", "can you help me"
+    }
+
+    finance_keywords = [
+        "settle", "transaction", "payout", "deposit", "fee", "tax", "refund", "hold",
+        "decline", "utr", "bank", "dispute", "order", "batch", "ledger", "gross",
+        "net", "amount", "chargeback", "balance", "reconciliation"
+    ]
+    has_finance_terms = any(fk in lowered for fk in finance_keywords)
+
+    stripped_punct = re.sub(r'[^\w\s]', '', lowered).strip()
+    if (stripped_punct in greetings or any(lowered.startswith(g) for g in ["hello", "hi ", "hey "])) and not has_finance_terms:
+        return "GREETING_OR_SMALL_TALK"
+
+    aggregate_patterns = [
+        r'\bhow many (?:transactions|records|settlements|orders|exceptions|deposits)\b',
+        r'\bcount (?:of )?(?:transactions|settlements|records|orders|exceptions)\b',
+        r'\btotal (?:transactions|settled volume|payout|pending|fees|deductions|deposits|gross|net)\b',
+        r'\bwhat(?: is|\'s)? (?:my )?total pending\b',
+        r'\bpending payout (?:for |across )?\b',
+        r'\bsummarize (?:today\'s |all )?matched (?:deposits|settlements|payouts)?\b',
+        r'\bsummarize deposits\b',
+        r'\baverage (?:ticket|transaction|amount|latency)\b',
+        r'\breconciliation rate\b',
+        r'\bhow much (?:is pending|was settled|were fees)\b'
+    ]
+    for pattern in aggregate_patterns:
+        if re.search(pattern, lowered):
+            return "AGGREGATE_QUERY"
+
+    out_of_scope_keywords = [
+        "weather", "president", "recipe", "joke", "movie", "song", "sports",
+        "cricket", "football", "capital of", "python code", "write a code",
+        "translate", "crypto price", "bitcoin", "stock market"
+    ]
+    if any(ook in lowered for ook in out_of_scope_keywords) and not has_finance_terms:
+        return "OUT_OF_SCOPE"
+
+    if has_finance_terms:
+        return "ENTITY_LOOKUP"
+
+    if len(cleaned.split()) <= 3 and not has_finance_terms:
+        return "GREETING_OR_SMALL_TALK"
+
+    return "OUT_OF_SCOPE"
+
+def retrieve_hybrid_context(query: str, top_k: int = 6) -> List[Dict[str, Any]]:
+    intent = classify_query_intent(query)
+    if intent in ("GREETING_OR_SMALL_TALK", "OUT_OF_SCOPE"):
+        return []
+
+    entities = extract_query_entities(query)
+    has_specific_entity = bool(entities["orders"] or entities["txns"] or entities["settles"] or entities["utrs"])
 
     exact_matched_records = []
     seen_ids = set()
 
-    has_specific_entity = bool(entities["orders"] or entities["txns"] or entities["settles"] or entities["utrs"])
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
     for order_ref in entities["orders"]:
         cursor.execute("SELECT * FROM transactions WHERE UPPER(order_ref) = UPPER(?)", (order_ref,))

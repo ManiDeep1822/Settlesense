@@ -2,11 +2,13 @@ import json
 import re
 import time
 import os
+import logging
 import requests
 from typing import List, Dict, Any, Optional, Tuple
 
 from backend.app.config import GEMINI_API_KEY, GEMINI_MODEL
-from backend.app.retrieval import retrieve_hybrid_context, extract_query_entities
+from backend.app.database import get_db_connection
+from backend.app.retrieval import retrieve_hybrid_context, extract_query_entities, classify_query_intent
 from backend.app.schemas import QueryResponse, CitedRecord
 from backend.app.verifier import verify_settlement_answer
 
@@ -29,6 +31,107 @@ STRICT OPERATIONAL RULES:
   "exception_reason": null | "Description of the exception condition"
 }
 """
+
+def handle_aggregate_query(query: str) -> Dict[str, Any]:
+    lowered = query.lower()
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if "how many transaction" in lowered or "count of transaction" in lowered or "total transactions" in lowered or "in the database" in lowered:
+        cursor.execute("SELECT COUNT(*) as total_count, SUM(amount) as total_gross, SUM(fee) as total_fees, SUM(tax) as total_tax, SUM(net_amount) as total_net FROM transactions")
+        row = cursor.fetchone()
+        t_count = row["total_count"] or 0
+        t_gross = row["total_gross"] or 0.0
+        t_fees = row["total_fees"] or 0.0
+        t_tax = row["total_tax"] or 0.0
+        t_net = row["total_net"] or 0.0
+        conn.close()
+
+        return {
+            "answer": f"There are currently {t_count} transactions recorded in the settlement database, with a total gross volume of ₹{t_gross:,.2f} (Total MDR fees deducted: ₹{t_fees:,.2f}, Total GST: ₹{t_tax:,.2f}, Net volume: ₹{t_net:,.2f}).",
+            "confidence": "HIGH",
+            "confidence_score": 1.0,
+            "cited_record_ids": [],
+            "exception_detected": False,
+            "exception_type": None,
+            "exception_reason": None
+        }
+
+    if "pending payout" in lowered or "pending settlement" in lowered or "total pending" in lowered:
+        cursor.execute("""
+            SELECT COUNT(*) as p_count, SUM(amount) as p_gross, SUM(fee) as p_fees, SUM(tax) as p_tax, SUM(net_amount) as p_net 
+            FROM transactions 
+            WHERE status IN ('pending', 'delayed', 'hold')
+        """)
+        row = cursor.fetchone()
+        p_count = row["p_count"] or 0
+        p_gross = row["p_gross"] or 0.0
+        p_fees = row["p_fees"] or 0.0
+        p_tax = row["p_tax"] or 0.0
+        p_net = row["p_net"] or 0.0
+        conn.close()
+
+        return {
+            "answer": f"Your total pending payout across all un-settled transactions (pending, delayed, and risk-hold) is ₹{p_net:,.2f} across {p_count} transactions (Gross pending volume: ₹{p_gross:,.2f}, estimated MDR fees: ₹{p_fees:,.2f}, GST: ₹{p_tax:,.2f}).",
+            "confidence": "HIGH",
+            "confidence_score": 0.99,
+            "cited_record_ids": [],
+            "exception_detected": False,
+            "exception_type": None,
+            "exception_reason": None
+        }
+
+    if "matched deposit" in lowered or "summarize deposits" in lowered or "total settled volume" in lowered or "settled payout across all batches" in lowered:
+        cursor.execute("SELECT COUNT(*) as s_count, SUM(total_amount) as s_gross, SUM(fees_deducted) as s_fees, SUM(tax_deducted) as s_tax, SUM(net_payout) as s_net FROM settlements WHERE status = 'settled'")
+        srow = cursor.fetchone()
+        cursor.execute("SELECT COUNT(*) as t_count FROM transactions WHERE status = 'settled'")
+        trow = cursor.fetchone()
+        s_count = srow["s_count"] or 0
+        s_gross = srow["s_gross"] or 0.0
+        s_fees = srow["s_fees"] or 0.0
+        s_tax = srow["s_tax"] or 0.0
+        s_net = srow["s_net"] or 0.0
+        t_count = trow["t_count"] or 0
+        conn.close()
+
+        return {
+            "answer": f"Matched deposit summary: {s_count} settlement batches ({t_count} transactions) have successfully settled. Total gross volume: ₹{s_gross:,.2f}, MDR fees deducted: ₹{s_fees:,.2f}, GST tax: ₹{s_tax:,.2f}, and total net disbursed payout: ₹{s_net:,.2f}.",
+            "confidence": "HIGH",
+            "confidence_score": 0.99,
+            "cited_record_ids": [],
+            "exception_detected": False,
+            "exception_type": None,
+            "exception_reason": None
+        }
+
+    if "exception" in lowered:
+        cursor.execute("SELECT COUNT(*) as exc_count FROM exceptions_log WHERE status = 'UNRESOLVED'")
+        row = cursor.fetchone()
+        exc_count = row["exc_count"] or 0
+        conn.close()
+
+        return {
+            "answer": f"There are currently {exc_count} active, unresolved anomalies recorded in the Exceptions Ledger requiring finance ops attention.",
+            "confidence": "HIGH",
+            "confidence_score": 1.0,
+            "cited_record_ids": [],
+            "exception_detected": False,
+            "exception_type": None,
+            "exception_reason": None
+        }
+
+    cursor.execute("SELECT COUNT(*) as total_txns, SUM(amount) as total_vol FROM transactions")
+    row = cursor.fetchone()
+    conn.close()
+    return {
+        "answer": f"Settlement ledger aggregate summary: {row['total_txns']} transactions recorded with ₹{row['total_vol'] or 0.0:,.2f} total gross volume.",
+        "confidence": "HIGH",
+        "confidence_score": 0.95,
+        "cited_record_ids": [],
+        "exception_detected": False,
+        "exception_type": None,
+        "exception_reason": None
+    }
 
 def generate_offline_deterministic_answer(query: str, retrieved_records: List[Dict[str, Any]]) -> Dict[str, Any]:
     entities = extract_query_entities(query)
@@ -120,37 +223,37 @@ def generate_offline_deterministic_answer(query: str, retrieved_records: List[Di
             return {
                 "answer": f"For Order {order_ref} (Transaction {txn_id}, Gross: ₹{amount:,.2f}), the MDR fee deducted is ₹{fee:,.2f} plus 18% GST tax of ₹{tax:,.2f}, resulting in a net payout of ₹{net_amount:,.2f}.",
                 "confidence": "HIGH",
-                "confidence_score": 0.99,
+                "confidence_score": 0.98,
                 "cited_record_ids": [txn_id],
                 "exception_detected": False,
                 "exception_type": None,
                 "exception_reason": None
             }
 
-        if "payment method" in lowered or "method" in lowered:
-            return {
-                "answer": f"Order {order_ref} (Transaction {txn_id}) was authorized via {payment_method}. Gross amount: ₹{amount:,.2f}, Status: {status}.",
-                "confidence": "HIGH",
-                "confidence_score": 0.99,
-                "cited_record_ids": [txn_id],
-                "exception_detected": False,
-                "exception_type": None,
-                "exception_reason": None
-            }
-
-        if "date" in lowered and settlement_date:
-            return {
-                "answer": f"The settlement date for Order {order_ref} (Transaction {txn_id}) was {settlement_date}. Gross amount: ₹{amount:,.2f}, Net payout: ₹{net_amount:,.2f}.",
-                "confidence": "HIGH",
-                "confidence_score": 0.99,
-                "cited_record_ids": [txn_id],
-                "exception_detected": False,
-                "exception_type": None,
-                "exception_reason": None
-            }
+        if "utr" in lowered or "bank" in lowered:
+            if bank_ref:
+                return {
+                    "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) was settled to your registered bank account under Bank Reference / UTR: {bank_ref} on {settlement_date}.",
+                    "confidence": "HIGH",
+                    "confidence_score": 0.99,
+                    "cited_record_ids": [txn_id],
+                    "exception_detected": False,
+                    "exception_type": None,
+                    "exception_reason": None
+                }
+            else:
+                return {
+                    "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) currently has no bank UTR assigned because its status is '{status}'.",
+                    "confidence": "HIGH",
+                    "confidence_score": 0.95,
+                    "cited_record_ids": [txn_id],
+                    "exception_detected": status != "settled",
+                    "exception_type": "SETTLEMENT_HOLD" if status in ("delayed", "pending", "hold") else None,
+                    "exception_reason": failure_reason
+                }
 
         if status == "declined":
-            reason_text = failure_reason or "Payment declined by issuing bank or processor"
+            reason_text = failure_reason or "Payment was declined by issuing bank or risk filter"
             return {
                 "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) did not settle because it was declined before capture. Reason: {reason_text}. No settlement funds were collected or queued for disbursement.",
                 "confidence": "HIGH",
@@ -160,10 +263,12 @@ def generate_offline_deterministic_answer(query: str, retrieved_records: List[Di
                 "exception_type": "DECLINED_TRANSACTION",
                 "exception_reason": reason_text
             }
-        elif status == "delayed":
-            reason_text = failure_reason or "Settlement deferred due to risk or banking rail hold"
+
+        if status == "delayed" or status == "hold":
+            reason_text = failure_reason or "Transaction is pending risk verification or nodal bank settlement queue"
+            sdate_text = f"Expected settlement date is deferred to {settlement_date}." if settlement_date else "Settlement date is pending clearance."
             return {
-                "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) is currently delayed. Failure reason / hold: {reason_text}. Expected settlement date is deferred to {settlement_date or 'under review'}.",
+                "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) is currently delayed. Failure reason / hold: {reason_text}. {sdate_text}",
                 "confidence": "HIGH",
                 "confidence_score": 0.95,
                 "cited_record_ids": [txn_id],
@@ -171,31 +276,12 @@ def generate_offline_deterministic_answer(query: str, retrieved_records: List[Di
                 "exception_type": "SETTLEMENT_HOLD",
                 "exception_reason": reason_text
             }
-        elif status == "exception":
-            reason_text = failure_reason or "Discrepancy detected in bank UTR or settlement batch calculation"
-            extra = f" A partial refund of ₹{refund_amount:,.2f} was recorded." if refund_amount > 0 else ""
+
+        if status == "settled":
+            utr_text = f"under Bank UTR {bank_ref}" if bank_ref else "to nodal account"
+            sdate_text = f"on {settlement_date}" if settlement_date else "in recent batch"
             return {
-                "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) is flagged with an exception status.{extra} Root cause: {reason_text}. The transaction is currently held in the exception queue for manual finance ops review.",
-                "confidence": "HIGH",
-                "confidence_score": 0.94,
-                "cited_record_ids": [txn_id],
-                "exception_detected": True,
-                "exception_type": "BANK_UTR_MISMATCH" if "UTR" in reason_text else "DATA_AMBIGUITY",
-                "exception_reason": reason_text
-            }
-        elif status == "pending":
-            return {
-                "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) is pending normal batch settlement. Expected settlement date is {settlement_date or 'T+1 morning cutoff'}. Net payout after fees of ₹{fee:,.2f} will be ₹{net_amount:,.2f}.",
-                "confidence": "HIGH",
-                "confidence_score": 0.96,
-                "cited_record_ids": [txn_id],
-                "exception_detected": False,
-                "exception_type": None,
-                "exception_reason": None
-            }
-        elif status == "matched":
-            return {
-                "answer": f"Order {order_ref} (Transaction {txn_id}) of ₹{amount:,.2f} was successfully settled on {settlement_date or 'scheduled cycle'} under settlement batch {target_txn.get('settlement_id') or 'N/A'}. Bank reference UTR: {bank_ref or 'Confirmed'}. Net amount credited: ₹{net_amount:,.2f}.",
+                "answer": f"Order {order_ref} (Transaction {txn_id}) was successfully settled {sdate_text} {utr_text}. Gross: ₹{amount:,.2f}, MDR Fee: ₹{fee:,.2f}, GST: ₹{tax:,.2f}, Net Disbursed: ₹{net_amount:,.2f}.",
                 "confidence": "HIGH",
                 "confidence_score": 0.99,
                 "cited_record_ids": [txn_id],
@@ -203,50 +289,44 @@ def generate_offline_deterministic_answer(query: str, retrieved_records: List[Di
                 "exception_type": None,
                 "exception_reason": None
             }
-        elif status == "unmatched":
-            reason_text = failure_reason or "Nodal bank credit confirmation missing in statement feed"
+
+        if status == "refunded":
+            ref_text = f"₹{refund_amount:,.2f}" if refund_amount else f"₹{amount:,.2f}"
             return {
-                "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) is unmatched in bank reconciliation. Reason: {reason_text}. Bank reference {bank_ref or 'N/A'} was not confirmed in MT940 statement.",
+                "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) had a refund processed for {ref_text}. Net settlement adjustments have been applied to your ledger balance.",
                 "confidence": "HIGH",
-                "confidence_score": 0.92,
+                "confidence_score": 0.95,
+                "cited_record_ids": [txn_id],
+                "exception_detected": False,
+                "exception_type": None,
+                "exception_reason": "Refund processed"
+            }
+
+        if status == "disputed":
+            disp_reason = failure_reason or "Customer chargeback filed with card issuer"
+            return {
+                "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) settlement is withheld due to an active payment dispute / chargeback. Reason: {disp_reason}. Funds will remain on hold until dispute resolution.",
+                "confidence": "HIGH",
+                "confidence_score": 0.95,
+                "cited_record_ids": [txn_id],
+                "exception_detected": True,
+                "exception_type": "DISPUTE_UNDER_REVIEW",
+                "exception_reason": disp_reason
+            }
+
+        if status == "unmatched":
+            return {
+                "answer": f"Order {order_ref} (Transaction {txn_id}, ₹{amount:,.2f}) is flagged as unmatched. Nodal bank statement shows amount mismatch or missing payment capture record.",
+                "confidence": "MEDIUM",
+                "confidence_score": 0.85,
                 "cited_record_ids": [txn_id],
                 "exception_detected": True,
                 "exception_type": "BANK_UTR_MISMATCH",
-                "exception_reason": reason_text
-            }
-
-    if "pending payout" in lowered or "pending" in lowered or "last week" in lowered:
-        pending_txns = [r for r in retrieved_records if r.get("status") in ["pending", "delayed"]]
-        if pending_txns:
-            total_pending = sum(r.get("net_amount", r.get("amount", 0.0)) for r in pending_txns)
-            cited_ids = [r["id"] for r in pending_txns[:5] if "id" in r]
-            return {
-                "answer": f"You have {len(pending_txns)} pending or delayed transactions in the current pipeline totaling approximately ₹{total_pending:,.2f} in net payouts scheduled across upcoming settlement windows.",
-                "confidence": "HIGH",
-                "confidence_score": 0.95,
-                "cited_record_ids": cited_ids,
-                "exception_detected": False,
-                "exception_type": None,
-                "exception_reason": None
-            }
-
-    if "matched" in lowered or "summarize" in lowered or "today" in lowered:
-        matched_txns = [r for r in retrieved_records if r.get("status") == "matched"]
-        if matched_txns:
-            total_matched = sum(r.get("net_amount", r.get("amount", 0.0)) for r in matched_txns)
-            cited_ids = [r["id"] for r in matched_txns[:5] if "id" in r]
-            return {
-                "answer": f"Found {len(matched_txns)} matched and reconciled settlement records totaling ₹{total_matched:,.2f} net payout credited to your nodal account.",
-                "confidence": "HIGH",
-                "confidence_score": 0.95,
-                "cited_record_ids": cited_ids,
-                "exception_detected": False,
-                "exception_type": None,
-                "exception_reason": None
+                "exception_reason": failure_reason or "Amount mismatch during automatic bank reconciliation"
             }
 
     first = retrieved_records[0]
-    rec_id = first.get("id") or first.get("settlement_id", "RECORD-1")
+    rec_id = first.get("id", first.get("settlement_id", "REC-001"))
     return {
         "answer": f"Based on retrieved record {rec_id}, amount is ₹{first.get('amount', first.get('total_amount', 0.0)):,.2f} with status '{first.get('status')}'.",
         "confidence": "MEDIUM",
@@ -280,7 +360,7 @@ def call_gemini_api(prompt: str) -> Optional[Dict[str, Any]]:
     }
 
     try:
-        response = requests.post(url, headers=headers, json=payload, timeout=15)
+        response = requests.post(url, headers=headers, json=payload, timeout=12)
         if response.status_code == 200:
             data = response.json()
             raw_text = data["candidates"][0]["content"]["parts"][0]["text"]
@@ -300,7 +380,72 @@ def call_gemini_api(prompt: str) -> Optional[Dict[str, Any]]:
 
 def process_settlement_query(query: str, merchant_id: Optional[str] = None) -> QueryResponse:
     start_time = time.time()
-    
+    intent = classify_query_intent(query)
+
+    if intent == "GREETING_OR_SMALL_TALK":
+        latency_ms = round((time.time() - start_time) * 1000, 2)
+        return QueryResponse(
+            answer="Hello! I am SettleSense, your AI Settlement Finance Controller. I can help you investigate transaction statuses, explain settlement delays or risk holds, calculate MDR fee and GST deductions, reconcile bank UTR numbers, and summarize payout batches.\n\nTo get started, please ask a question with an Order ID (e.g. #4521), Transaction ID (e.g. TXN-8894-4521), Settlement Batch ID (e.g. SETTLE-20231024-001), or an aggregate question like 'What is my total pending payout?'.",
+            confidence="HIGH",
+            confidence_score=1.0,
+            engine_used="fallback",
+            engine_used_primary="fallback",
+            engine_used_verifier="fallback",
+            verifier_verdict="NONE",
+            verifier_notes="Greeting/conversational query. No factual ledger claims made.",
+            discrepancies=[],
+            cited_records=[],
+            cited_record_ids=[],
+            exception_detected=False,
+            exception_type=None,
+            exception_reason=None,
+            latency_ms=latency_ms,
+            intent=intent
+        )
+
+    if intent == "OUT_OF_SCOPE":
+        latency_ms = round((time.time() - start_time) * 1000, 2)
+        return QueryResponse(
+            answer="I am specialized specifically as a Payment Settlement Q&A Agent and Finance Controller. I can only assist with payment transactions, settlement payouts, fee deductions, and ledger reconciliation. Please ask a settlement-related question.",
+            confidence="UNANSWERABLE",
+            confidence_score=0.0,
+            engine_used="fallback",
+            engine_used_primary="fallback",
+            engine_used_verifier="fallback",
+            verifier_verdict="NONE",
+            verifier_notes="Out-of-scope inquiry. No factual ledger claims made.",
+            discrepancies=[],
+            cited_records=[],
+            cited_record_ids=[],
+            exception_detected=True,
+            exception_type="OUT_OF_SCOPE",
+            exception_reason="Query is outside the scope of settlement and payment ledger operations.",
+            latency_ms=latency_ms,
+            intent=intent
+        )
+
+    if intent == "AGGREGATE_QUERY":
+        agg_result = handle_aggregate_query(query)
+        latency_ms = round((time.time() - start_time) * 1000, 2)
+        return QueryResponse(
+            answer=agg_result["answer"],
+            confidence=agg_result.get("confidence", "HIGH"),
+            confidence_score=agg_result.get("confidence_score", 0.99),
+            engine_used="fallback",
+            engine_used_primary="fallback",
+            engine_used_verifier="fallback",
+            verifier_verdict="VERIFIED",
+            verifier_notes="Deterministic SQL aggregation verified against live SQLite database.",
+            discrepancies=[],
+            cited_records=[],
+            cited_record_ids=[],
+            exception_detected=agg_result.get("exception_detected", False),
+            exception_type=agg_result.get("exception_type"),
+            exception_reason=agg_result.get("exception_reason"),
+            latency_ms=latency_ms,
+            intent=intent
+        )
+
     retrieved_records = retrieve_hybrid_context(query, top_k=6)
     
     context_str = json.dumps(retrieved_records, indent=2, default=str)
@@ -361,6 +506,9 @@ Respond with valid JSON following the schema specified.
 
     latency_ms = round((time.time() - start_time) * 1000, 2)
 
+    if engine_used_primary == "fallback" and latency_ms > 200.0:
+        logging.warning(f"Engine latency anomaly: engine is '{engine_used_primary}' but latency was {latency_ms}ms (Gemini API network call failed or rate-limited).")
+
     valid_cited_records = []
     record_map = {r.get("id"): r for r in retrieved_records if "id" in r}
     settle_map = {r.get("settlement_id"): r for r in retrieved_records if "settlement_id" in r}
@@ -417,5 +565,6 @@ Respond with valid JSON following the schema specified.
         exception_detected=exception_detected,
         exception_type=exception_type,
         exception_reason=exception_reason,
-        latency_ms=latency_ms
+        latency_ms=latency_ms,
+        intent=intent
     )

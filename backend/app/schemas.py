@@ -35,6 +35,7 @@ class QueryResponse(BaseModel):
     exception_type: Optional[str] = None
     exception_reason: Optional[str] = None
     latency_ms: float = 0.0
+    intent: Optional[str] = "ENTITY_LOOKUP"
 
 class TransactionItem(BaseModel):
     id: str
@@ -64,20 +65,31 @@ class PaginatedTransactionsResponse(BaseModel):
     page_size: int
     total_pages: int
 
-class ExceptionLogItem(BaseModel):
+class ExceptionItem(BaseModel):
     id: str
     query_text: str
     exception_type: str
     reason: str
-    confidence_score: float
+    detected_at: Optional[str] = None
+    timestamp: Optional[str] = None
+    status: str
+    resolved_at: Optional[str] = None
+    resolution_notes: Optional[str] = None
+    target_record_id: Optional[str] = None
+    confidence_score: Optional[float] = 0.0
     candidate_record_ids: Optional[str] = None
-    timestamp: str
-    status: str
-    resolution_notes: Optional[str] = None
 
-class ExceptionResolveRequest(BaseModel):
-    status: str
-    resolution_notes: Optional[str] = None
+ExceptionLogItem = ExceptionItem
+
+class PaginatedExceptionsResponse(BaseModel):
+    items: List[ExceptionItem]
+    total: int
+    page: int
+    page_size: int
+    unresolved_count: int
+
+class ResolveExceptionRequest(BaseModel):
+    resolution_notes: str
 
 class AccuracyTestCaseResult(BaseModel):
     test_id: str
@@ -85,49 +97,63 @@ class AccuracyTestCaseResult(BaseModel):
     question: str
     expected_action: str
     verdict: str
-    verifier_verdict: str = "VERIFIED"
+    verifier_verdict: Optional[str] = "VERIFIED"
     verifier_notes: Optional[str] = None
     expected_answer_snippet: Optional[str] = None
     actual_answer: str
     confidence: str
     engine_used: str = "fallback"
-    engine_used_primary: str = "fallback"
-    engine_used_verifier: str = "fallback"
+    engine_used_primary: Optional[str] = "fallback"
+    engine_used_verifier: Optional[str] = "fallback"
     cited_record_ids: List[str]
     latency_ms: float
-    notes: Optional[str] = None
+    notes: str
+
+class EnginePerformanceStats(BaseModel):
+    total: int = 0
+    passed: int = 0
+    correctly_declined: int = 0
+    failed: int = 0
+    accuracy_percentage: float = 0.0
+    avg_latency_ms: float = 0.0
+
+class VerifierPerformanceStats(BaseModel):
+    total_audits: int = 0
+    verified_count: int = 0
+    minor_discrepancy_count: int = 0
+    flagged_count: int = 0
+    agreement_rate_percent: float = 0.0
+    catch_rate_percent: float = 0.0
+    false_flag_rate_percent: float = 0.0
+
+class CategoryStats(BaseModel):
+    total: int = 0
+    passed: int = 0
+    correctly_declined: int = 0
+    partially_passed: int = 0
+    failed: int = 0
 
 class AccuracyReportResponse(BaseModel):
     id: str
     run_timestamp: str
     total_tests: int
     passed: int
+    correctly_declined: int
     partially_passed: int
     failed: int
-    correctly_declined: int
     accuracy_percentage: float
     avg_latency_ms: float
-    verifier_performance: Dict[str, Any] = {}
-    engine_breakdown: Dict[str, Any] = {}
-    category_breakdown: Dict[str, Dict[str, Any]] = {}
-    test_cases: List[AccuracyTestCaseResult] = []
+    verifier_performance: Optional[VerifierPerformanceStats] = None
+    engine_breakdown: Optional[Dict[str, EnginePerformanceStats]] = None
+    category_breakdown: Dict[str, CategoryStats]
+    test_cases: List[AccuracyTestCaseResult]
 
-class MetricsResponse(BaseModel):
-    queries_per_sec: float
-    avg_response_time_ms: float
-    total_queries: int
-    records_indexed: int
-    total_transactions: int
-    total_settlements: int
-    exception_count: int
-    unresolved_exception_count: int
-    reconciliation_rate_percent: float
-
-class SummaryKPIResponse(BaseModel):
-    total_settled_amount: float
-    pending_payout_amount: float
+class DashboardMetricsResponse(BaseModel):
+    total_settled_volume: float
     total_transactions_count: int
-    matched_count: int
-    exception_count: int
-    reconciliation_rate: float
+    reconciliation_match_rate: float
     avg_query_latency_ms: float
+    active_exceptions_count: int
+    accuracy_score: float
+    pending_payout_volume: float
+    delayed_transactions_count: int

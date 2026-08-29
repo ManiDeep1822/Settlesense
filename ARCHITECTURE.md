@@ -40,28 +40,37 @@ For a hackathon and buildathon submission, requiring evaluators to configure clo
 
 ```mermaid
 flowchart TD
-    User([Merchant / Finance User]) -->|Query: 'Why didn't order #4521 settle?'| API[FastAPI /query Endpoint]
-    API --> Extractor[Regex & Semantic Entity Extractor]
+    User([Merchant / Finance User]) -->|Query| API[FastAPI /query Endpoint]
+    API --> Classifier[Pre-Retrieval Intent Classifier]
+    
+    Classifier -->|GREETING_OR_SMALL_TALK| DirectGreet[Return Informational Guide - Zero DB Retrieval]
+    Classifier -->|OUT_OF_SCOPE| DirectDecline[Polite Out-of-Scope Decline - Zero DB Retrieval]
+    Classifier -->|AGGREGATE_QUERY| SQLAgg[Execute Deterministic SQL COUNT / SUM / GROUP BY on SQLite]
+    Classifier -->|ENTITY_LOOKUP| Extractor[Regex & Parameterized Entity Extractor]
     
     Extractor -->|Order / Txn ID Present| DBExact[(SQLite Indexed Lookup)]
-    Extractor -->|Broad Query| VectorDB[(ChromaDB Vector Store)]
+    Extractor -->|Broad Financial Query| VectorDB[(ChromaDB Vector Store)]
     
-    DBExact --> Merger[Context Merger & Entity Isolation]
+    DBExact --> Merger[Context Merger & Entity Isolation Guardrail]
     VectorDB --> Merger
     
     Merger --> Guardrail{Target Entity Found in DB?}
     Guardrail -->|No - Missing Order| Decline[Honest Decline + Exceptions Ledger]
     Guardrail -->|Yes - Valid Rows| PrimaryEngine[Primary Agent: Gemini 2.5 Flash / Fallback]
     
+    SQLAgg --> PassUI[Display Answer + Exact Totals]
+    DirectGreet --> GreetUI[Display Assistant Message - No Verified Badge]
+    DirectDecline --> GreetUI
+    
     PrimaryEngine --> VerifierAgent[Independent Verifier Agent]
     DBExact -.->|Raw Ledger Rows| VerifierAgent
     
     VerifierAgent --> VerdictCheck{Verifier Verdict}
-    VerdictCheck -->|VERIFIED| PassUI[Display ✓ Verified Badge + Citations]
-    VerdictCheck -->|MINOR_DISCREPANCY| WarnUI[Display ⚠ Minor Discrepancy Badge + Audit Note]
+    VerdictCheck -->|VERIFIED| PassUI2[Display ✓ Facts Verified Badge + Citations]
+    VerdictCheck -->|MINOR_DISCREPANCY| WarnUI[Display ⚠ Minor Fact Discrepancy Badge + Audit Note]
     VerdictCheck -->|FLAGGED| FlagUI[Route to Exceptions Ledger: VERIFIER_FLAGGED]
     
-    Decline --> PassUI
+    Decline --> PassUI2
 ```
 
 ---

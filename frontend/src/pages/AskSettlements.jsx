@@ -7,13 +7,14 @@ export default function AskSettlements({ initialQuery }) {
     {
       id: 'welcome-msg',
       type: 'agent',
-      text: 'Hello! I am SettleSense, your AI Finance Controller. Every response is fact-checked by our independent Verifier Agent against raw settlement ledger records.',
+      text: 'Hello! I am SettleSense, your AI Settlement Finance Controller. Every settlement inquiry is fact-checked by our independent Verifier Agent against raw ledger records.',
       cited_records: [],
       confidence: 'HIGH',
       confidence_score: 1.0,
       engine_used: 'fallback',
-      verifier_verdict: 'VERIFIED',
-      verifier_notes: 'System initialized and verified against database.',
+      intent: 'GREETING_OR_SMALL_TALK',
+      verifier_verdict: 'NONE',
+      verifier_notes: 'System initialized and connected to database.',
       latency_ms: 0
     }
   ])
@@ -76,6 +77,7 @@ export default function AskSettlements({ initialQuery }) {
           engine_used: response.engine_used || 'fallback',
           engine_used_primary: response.engine_used_primary || response.engine_used || 'fallback',
           engine_used_verifier: response.engine_used_verifier || 'fallback',
+          intent: response.intent || 'ENTITY_LOOKUP',
           verifier_verdict: response.verifier_verdict || 'VERIFIED',
           verifier_notes: response.verifier_notes,
           discrepancies: response.discrepancies || [],
@@ -97,6 +99,7 @@ export default function AskSettlements({ initialQuery }) {
           confidence: 'LOW',
           confidence_score: 0.0,
           engine_used: 'fallback',
+          intent: 'ENTITY_LOOKUP',
           verifier_verdict: 'FLAGGED',
           verifier_notes: 'Connection error during reasoning pipeline.',
           discrepancies: [err.message],
@@ -120,11 +123,11 @@ export default function AskSettlements({ initialQuery }) {
 
   const suggestions = [
     "Why didn't order #4521 settle yesterday?",
-    "What is my pending payout for last week?",
+    "What is my total pending payout?",
+    "How many transactions are in the database?",
     "Why is transaction TXN-849202B flagged as an exception?",
     "Why didn't order #99999 settle?",
-    "Verify the settlement status of ORD-992-B",
-    "What was the fee deducted for ORD-992-B?"
+    "Verify the settlement status of ORD-992-B"
   ]
 
   return (
@@ -160,7 +163,7 @@ export default function AskSettlements({ initialQuery }) {
                         {msg.text}
                       </p>
 
-                      {msg.verifier_notes && msg.verifier_verdict !== 'VERIFIED' && (
+                      {msg.verifier_notes && msg.verifier_verdict !== 'VERIFIED' && msg.verifier_verdict !== 'NONE' && (
                         <div className="mt-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-900">
                           <div className="flex items-center gap-1.5 font-bold mb-1">
                             <span className="material-symbols-outlined text-[16px] text-amber-700">fact_check</span>
@@ -202,7 +205,7 @@ export default function AskSettlements({ initialQuery }) {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 text-xs ml-1">
-                      {msg.verifier_verdict === 'VERIFIED' && (
+                      {msg.verifier_verdict === 'VERIFIED' && msg.intent !== 'GREETING_OR_SMALL_TALK' && msg.intent !== 'OUT_OF_SCOPE' && msg.verifier_verdict !== 'NONE' && (
                         <div 
                           title="All stated facts confirmed against ledger records. Does not confirm the answer addresses every part of a multi-part question."
                           className="flex items-center gap-1 text-secondary bg-secondary/10 px-2.5 py-1 rounded-full border border-secondary/20 font-medium cursor-help transition-all hover:bg-secondary/15"
@@ -212,7 +215,7 @@ export default function AskSettlements({ initialQuery }) {
                         </div>
                       )}
 
-                      {msg.verifier_verdict === 'MINOR_DISCREPANCY' && (
+                      {msg.verifier_verdict === 'MINOR_DISCREPANCY' && msg.intent !== 'GREETING_OR_SMALL_TALK' && msg.intent !== 'OUT_OF_SCOPE' && (
                         <div 
                           title="Core conclusion grounded in ledger, but minor descriptive or rounding imprecision noted."
                           className="flex items-center gap-1 text-amber-700 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20 font-medium cursor-help transition-all hover:bg-amber-500/15"
@@ -232,7 +235,12 @@ export default function AskSettlements({ initialQuery }) {
                         </div>
                       )}
 
-                      {msg.engine_used === 'gemini' ? (
+                      {msg.intent === 'GREETING_OR_SMALL_TALK' ? (
+                        <div className="flex items-center gap-1 text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20 font-medium">
+                          <span className="material-symbols-outlined text-[14px]">forum</span>
+                          <span>Assistant</span>
+                        </div>
+                      ) : msg.engine_used === 'gemini' ? (
                         <div className="flex items-center gap-1 text-purple-700 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20 font-medium">
                           <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
                           <span>Gemini 2.5 Flash</span>
@@ -251,7 +259,7 @@ export default function AskSettlements({ initialQuery }) {
                         </div>
                       )}
 
-                      {msg.exception_detected && (
+                      {msg.exception_detected && msg.intent !== 'OUT_OF_SCOPE' && (
                         <div className="flex items-center gap-1 text-tertiary bg-tertiary/10 px-2.5 py-1 rounded-full border border-tertiary/20 font-medium">
                           <span className="material-symbols-outlined text-[14px]">report_problem</span>
                           <span>Logged to Exception Ledger</span>
@@ -281,7 +289,7 @@ export default function AskSettlements({ initialQuery }) {
                     <div className="flex items-center justify-between gap-3 mb-2">
                       <div className="flex items-center gap-2 font-semibold text-primary">
                         <span className="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
-                        <span>Primary Reasoning & Independent Verifier Pass...</span>
+                        <span>Reasoning & Verification Pipeline Active...</span>
                       </div>
                       <span className="text-[11px] font-mono text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">
                         {elapsedSeconds.toFixed(1)}s
@@ -294,7 +302,7 @@ export default function AskSettlements({ initialQuery }) {
                   </div>
                   <div className="flex items-center gap-2 text-[11px] text-on-surface-variant ml-1">
                     <span className="material-symbols-outlined text-[14px] animate-spin text-primary">sync</span>
-                    <span>Retrieving SQLite ledger $\rightarrow$ Primary Agent $\rightarrow$ Independent Verifier Agent audit</span>
+                    <span>Classifying Intent $\rightarrow$ SQLite / Vector Engine $\rightarrow$ Verifier Audit</span>
                   </div>
                 </div>
               </div>
