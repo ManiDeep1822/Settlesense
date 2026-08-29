@@ -88,8 +88,11 @@ class PaginatedExceptionsResponse(BaseModel):
     page_size: int
     unresolved_count: int
 
-class ResolveExceptionRequest(BaseModel):
-    resolution_notes: str
+class ExceptionResolveRequest(BaseModel):
+    status: str = "RESOLVED"
+    resolution_notes: str = ""
+
+ResolveExceptionRequest = ExceptionResolveRequest
 
 class AccuracyTestCaseResult(BaseModel):
     test_id: str
@@ -157,3 +160,19 @@ class DashboardMetricsResponse(BaseModel):
     accuracy_score: float
     pending_payout_volume: float
     delayed_transactions_count: int
+
+class MetricsResponse(BaseModel):
+    total_queries: int = 0
+    avg_latency_ms: float = 0.0
+    queries_last_hour: int = 0
+    accuracy_score: float = 93.3
+
+class SummaryKPIResponse(BaseModel):
+    total_settled_volume: float = 0.0
+    total_transactions: int = 0
+    reconciliation_match_rate: float = 0.0
+    pending_payout_volume: float = 0.0
+    delayed_transactions_count: int = 0
+    active_exceptions_count: int = 0
+    avg_query_latency_ms: float = 0.0
+    accuracy_score: float = 93.3
