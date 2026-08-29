@@ -1,0 +1,923 @@
+{
+  "id": "RUN-F2C2844D",
+  "run_timestamp": "2026-08-29 19:37:41",
+  "total_tests": 38,
+  "passed": 25,
+  "correctly_declined": 8,
+  "partially_passed": 5,
+  "failed": 0,
+  "accuracy_percentage": 86.84,
+  "avg_latency_ms": 1733.55,
+  "verifier_performance": {
+    "total_audits": 38,
+    "verified_count": 38,
+    "minor_discrepancy_count": 0,
+    "flagged_count": 0,
+    "agreement_rate_percent": 100.0,
+    "catch_rate_percent": 100.0,
+    "false_flag_rate_percent": 0.0
+  },
+  "engine_breakdown": {
+    "gemini": {
+      "total": 0,
+      "passed": 0,
+      "correctly_declined": 0,
+      "failed": 0,
+      "accuracy_percentage": 0.0,
+      "avg_latency_ms": 0.0
+    },
+    "fallback": {
+      "total": 38,
+      "passed": 25,
+      "correctly_declined": 8,
+      "failed": 0,
+      "accuracy_percentage": 86.84,
+      "avg_latency_ms": 1733.55
+    }
+  },
+  "category_breakdown": {
+    "declined_investigation": {
+      "total": 3,
+      "passed": 3,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "matched_lookup": {
+      "total": 5,
+      "passed": 4,
+      "correctly_declined": 0,
+      "partially_passed": 1,
+      "failed": 0
+    },
+    "exception_handling": {
+      "total": 3,
+      "passed": 3,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "pending_payout": {
+      "total": 2,
+      "passed": 2,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "unmatched_reconciliation": {
+      "total": 2,
+      "passed": 2,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "risk_hold": {
+      "total": 2,
+      "passed": 2,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "non_existent_decline": {
+      "total": 7,
+      "passed": 0,
+      "correctly_declined": 7,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "aggregation_payouts": {
+      "total": 1,
+      "passed": 1,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "aggregation_matched": {
+      "total": 1,
+      "passed": 0,
+      "correctly_declined": 0,
+      "partially_passed": 1,
+      "failed": 0
+    },
+    "fee_deduction": {
+      "total": 2,
+      "passed": 2,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "bank_utr_lookup": {
+      "total": 2,
+      "passed": 2,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "verifier_accurate_grounding": {
+      "total": 1,
+      "passed": 1,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "verifier_hold_detection": {
+      "total": 1,
+      "passed": 1,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "verifier_discrepancy_audit": {
+      "total": 1,
+      "passed": 0,
+      "correctly_declined": 0,
+      "partially_passed": 1,
+      "failed": 0
+    },
+    "verifier_non_existent_check": {
+      "total": 1,
+      "passed": 0,
+      "correctly_declined": 1,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "verifier_unmatched_ledger": {
+      "total": 1,
+      "passed": 1,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "verifier_compound_refund_math": {
+      "total": 1,
+      "passed": 0,
+      "correctly_declined": 0,
+      "partially_passed": 1,
+      "failed": 0
+    },
+    "verifier_confusable_order_disambiguation": {
+      "total": 1,
+      "passed": 1,
+      "correctly_declined": 0,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "verifier_batch_payout_attribution": {
+      "total": 1,
+      "passed": 0,
+      "correctly_declined": 0,
+      "partially_passed": 1,
+      "failed": 0
+    }
+  },
+  "test_cases": [
+    {
+      "test_id": "TEST-001",
+      "category": "declined_investigation",
+      "question": "Why didn't order #4521 settle yesterday?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "zip code",
+      "actual_answer": "Order ORD-4521 (Transaction TXN-8894-4521, \u20b91,450.00) did not settle because it was declined before capture. Reason: Billing zip code mismatch flagged by processor; declined by issuing bank. No settlement funds were collected or queued for disbursement.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-8894-4521"
+      ],
+      "latency_ms": 1900.94,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-002",
+      "category": "matched_lookup",
+      "question": "What is the settlement status of ORD-992-B?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "settled",
+      "actual_answer": "Order ORD-992-B (Transaction TXN-849201A) of \u20b9124,500.00 was successfully settled on 2023-10-24 under settlement batch SETTLE-20231024-001. Bank reference UTR: CHASE-88392-XX. Net amount credited: \u20b9121,561.80.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849201A"
+      ],
+      "latency_ms": 1363.02,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-003",
+      "category": "exception_handling",
+      "question": "Why is transaction TXN-849202B flagged as an exception?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "refund",
+      "actual_answer": "Order ORD-104-C (Transaction TXN-849202B, \u20b98,430.50) is flagged with an exception status. A partial refund of \u20b92,000.00 was recorded. Root cause: Bank UTR amount mismatch due to concurrent partial refund of INR 2000. The transaction is currently held in the exception queue for manual finance ops review.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849202B"
+      ],
+      "latency_ms": 1749.26,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-004",
+      "category": "pending_payout",
+      "question": "When will order #553 settle?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "pending",
+      "actual_answer": "Order ORD-553-A (Transaction TXN-849203C, \u20b945,000.00) is pending normal batch settlement. Expected settlement date is 2023-10-25. Net payout after fees of \u20b9900.00 will be \u20b943,938.00.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849203C"
+      ],
+      "latency_ms": 1743.74,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-005",
+      "category": "unmatched_reconciliation",
+      "question": "What happened to order ORD-811-F settlement?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "unmatched",
+      "actual_answer": "Order ORD-811-F (Transaction TXN-849204D, \u20b99,200.75) is unmatched in bank reconciliation. Reason: Nodal bank account credit confirmation missing in bank feed. Bank reference CITI-11234-ZZ was not confirmed in MT940 statement.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849204D"
+      ],
+      "latency_ms": 1700.06,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-006",
+      "category": "matched_lookup",
+      "question": "Check bank reference and payout for ORD-229-K",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "wf-99821-aa",
+      "actual_answer": "Order ORD-229-K (Transaction TXN-849205E) of \u20b9210,000.00 was successfully settled on 2023-10-23 under settlement batch SETTLE-20231023-001. Bank reference UTR: WF-99821-AA. Net amount credited: \u20b9205,044.00.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849205E"
+      ],
+      "latency_ms": 1516.19,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-007",
+      "category": "risk_hold",
+      "question": "Why is payout delayed for order #9921?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "risk hold",
+      "actual_answer": "Order ORD-9921 (Transaction TXN-7701-9921, \u20b918,500.00) is currently delayed. Failure reason / hold: Risk hold triggered: High velocity ticket size exceeding standard merchant threshold. Expected settlement date is deferred to 2023-10-26.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-7701-9921"
+      ],
+      "latency_ms": 1711.63,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-008",
+      "category": "non_existent_decline",
+      "question": "Why didn't order #99999 settle?",
+      "expected_action": "DECLINE_HONESTLY",
+      "verdict": "CORRECTLY_DECLINED",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "expected_answer_snippet": "no matching entry",
+      "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-99999. Please verify the identifier or check if the transaction is pending ingestion.",
+      "confidence": "UNANSWERABLE",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 1978.63,
+      "notes": "Agent honestly declined non-existent record without fabrication"
+    },
+    {
+      "test_id": "TEST-009",
+      "category": "non_existent_decline",
+      "question": "Check status of transaction TXN-0000-NONEXISTENT",
+      "expected_action": "DECLINE_HONESTLY",
+      "verdict": "CORRECTLY_DECLINED",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "expected_answer_snippet": "no matching",
+      "actual_answer": "I reviewed the settlement database but found no matching entry for Transaction TXN-0000-NONEXISTENT. Please verify the identifier or check if the transaction is pending ingestion.",
+      "confidence": "UNANSWERABLE",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 1540.25,
+      "notes": "Agent honestly declined non-existent record without fabrication"
+    },
+    {
+      "test_id": "TEST-010",
+      "category": "non_existent_decline",
+      "question": "What is the UTR for order #888888?",
+      "expected_action": "DECLINE_HONESTLY",
+      "verdict": "CORRECTLY_DECLINED",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "expected_answer_snippet": "no matching",
+      "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-888888. Please verify the identifier or check if the transaction is pending ingestion.",
+      "confidence": "UNANSWERABLE",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 1688.36,
+      "notes": "Agent honestly declined non-existent record without fabrication"
+    },
+    {
+      "test_id": "TEST-011",
+      "category": "aggregation_payouts",
+      "question": "What is my pending payout for last week?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "pending",
+      "actual_answer": "You have 10 pending or delayed transactions in the current pipeline totaling approximately \u20b9278,747.30 in net payouts scheduled across upcoming settlement windows.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-7950-10410",
+        "TXN-9981-10462",
+        "TXN-2773-10192",
+        "TXN-7118-10112",
+        "TXN-6320-10530"
+      ],
+      "latency_ms": 2834.04,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-012",
+      "category": "aggregation_matched",
+      "question": "Summarize today's matched deposits",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "PARTIALLY_CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "matched",
+      "actual_answer": "Based on retrieved record TXN-7950-10410, amount is \u20b9266.49 with status 'delayed'.",
+      "confidence": "MEDIUM",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-7950-10410"
+      ],
+      "latency_ms": 1936.24,
+      "notes": "Partial match on details or citations"
+    },
+    {
+      "test_id": "TEST-013",
+      "category": "declined_investigation",
+      "question": "Why did payment fail for transaction TXN-8894-4521?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "declined",
+      "actual_answer": "Order ORD-4521 (Transaction TXN-8894-4521, \u20b91,450.00) did not settle because it was declined before capture. Reason: Billing zip code mismatch flagged by processor; declined by issuing bank. No settlement funds were collected or queued for disbursement.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-8894-4521"
+      ],
+      "latency_ms": 1786.71,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-014",
+      "category": "matched_lookup",
+      "question": "Find settlement details for SETTLE-20231024-001",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "PARTIALLY_CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "124500",
+      "actual_answer": "Settlement Batch SETTLE-20231024-001 was processed on 2023-10-24 with status 'settled'. Total batch gross: \u20b9124,500.00, MDR fees: \u20b92,490.00, GST tax: \u20b9448.20, Net disbursed payout: \u20b9121,561.80. Bank UTR: CHASE-88392-XX.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "SETTLE-20231024-001"
+      ],
+      "latency_ms": 1258.8,
+      "notes": "Partial match on details or citations"
+    },
+    {
+      "test_id": "TEST-015",
+      "category": "exception_handling",
+      "question": "What is the reason for exception on ORD-104-C?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "refund",
+      "actual_answer": "Order ORD-104-C (Transaction TXN-849202B, \u20b98,430.50) is flagged with an exception status. A partial refund of \u20b92,000.00 was recorded. Root cause: Bank UTR amount mismatch due to concurrent partial refund of INR 2000. The transaction is currently held in the exception queue for manual finance ops review.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849202B"
+      ],
+      "latency_ms": 1791.67,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-016",
+      "category": "non_existent_decline",
+      "question": "Can you explain the discrepancy on order ORD-777777?",
+      "expected_action": "DECLINE_HONESTLY",
+      "verdict": "CORRECTLY_DECLINED",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "expected_answer_snippet": "no matching",
+      "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-777777. Please verify the identifier or check if the transaction is pending ingestion.",
+      "confidence": "UNANSWERABLE",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 1703.11,
+      "notes": "Agent honestly declined non-existent record without fabrication"
+    },
+    {
+      "test_id": "TEST-017",
+      "category": "fee_deduction",
+      "question": "How much fee and tax were deducted for ORD-992-B?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "2490",
+      "actual_answer": "For Order ORD-992-B (Transaction TXN-849201A, Gross: \u20b9124,500.00), the MDR fee deducted is \u20b92,490.00 plus 18% GST tax of \u20b9448.20, resulting in a net payout of \u20b9121,561.80.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849201A"
+      ],
+      "latency_ms": 1653.83,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-018",
+      "category": "bank_utr_lookup",
+      "question": "Which transaction is linked to bank reference CHASE-88392-XX?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "txn-849201a",
+      "actual_answer": "Order ORD-992-B (Transaction TXN-849201A) of \u20b9124,500.00 was successfully settled on 2023-10-24 under settlement batch SETTLE-20231024-001. Bank reference UTR: CHASE-88392-XX. Net amount credited: \u20b9121,561.80.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849201A"
+      ],
+      "latency_ms": 1248.59,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-019",
+      "category": "bank_utr_lookup",
+      "question": "Trace bank reference BOA-44910-YY",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "txn-849202b",
+      "actual_answer": "Order ORD-104-C (Transaction TXN-849202B, \u20b98,430.50) is flagged with an exception status. A partial refund of \u20b92,000.00 was recorded. Root cause: Bank UTR amount mismatch due to concurrent partial refund of INR 2000. The transaction is currently held in the exception queue for manual finance ops review.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849202B"
+      ],
+      "latency_ms": 1708.67,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-020",
+      "category": "non_existent_decline",
+      "question": "Why was payout cancelled for order #123456789?",
+      "expected_action": "DECLINE_HONESTLY",
+      "verdict": "CORRECTLY_DECLINED",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "expected_answer_snippet": "no matching",
+      "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-123456789. Please verify the identifier or check if the transaction is pending ingestion.",
+      "confidence": "UNANSWERABLE",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 1795.56,
+      "notes": "Agent honestly declined non-existent record without fabrication"
+    },
+    {
+      "test_id": "TEST-021",
+      "category": "pending_payout",
+      "question": "What is the net payout expected for transaction TXN-849203C?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "43938",
+      "actual_answer": "Order ORD-553-A (Transaction TXN-849203C, \u20b945,000.00) is pending normal batch settlement. Expected settlement date is 2023-10-25. Net payout after fees of \u20b9900.00 will be \u20b943,938.00.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849203C"
+      ],
+      "latency_ms": 1644.76,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-022",
+      "category": "risk_hold",
+      "question": "Is transaction TXN-7701-9921 on hold?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "hold",
+      "actual_answer": "Order ORD-9921 (Transaction TXN-7701-9921, \u20b918,500.00) is currently delayed. Failure reason / hold: Risk hold triggered: High velocity ticket size exceeding standard merchant threshold. Expected settlement date is deferred to 2023-10-26.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-7701-9921"
+      ],
+      "latency_ms": 1258.85,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-023",
+      "category": "declined_investigation",
+      "question": "Was order #4521 captured or declined?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "declined",
+      "actual_answer": "Order ORD-4521 (Transaction TXN-8894-4521, \u20b91,450.00) did not settle because it was declined before capture. Reason: Billing zip code mismatch flagged by processor; declined by issuing bank. No settlement funds were collected or queued for disbursement.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-8894-4521"
+      ],
+      "latency_ms": 2097.52,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-024",
+      "category": "matched_lookup",
+      "question": "What payment method was used for ORD-229-K?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "netbanking",
+      "actual_answer": "Order ORD-229-K (Transaction TXN-849205E) was authorized via netbanking. Gross amount: \u20b9210,000.00, Status: matched.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849205E"
+      ],
+      "latency_ms": 1915.26,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-025",
+      "category": "unmatched_reconciliation",
+      "question": "Why is bank ref CITI-11234-ZZ not reconciled?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "missing",
+      "actual_answer": "Order ORD-811-F (Transaction TXN-849204D, \u20b99,200.75) is unmatched in bank reconciliation. Reason: Nodal bank account credit confirmation missing in bank feed. Bank reference CITI-11234-ZZ was not confirmed in MT940 statement.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849204D"
+      ],
+      "latency_ms": 2022.74,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-026",
+      "category": "non_existent_decline",
+      "question": "Search for transaction TXN-9999-FAKE99",
+      "expected_action": "DECLINE_HONESTLY",
+      "verdict": "CORRECTLY_DECLINED",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "expected_answer_snippet": "no matching",
+      "actual_answer": "I reviewed the settlement database but found no matching entry for Transaction TXN-9999-FAKE99. Please verify the identifier or check if the transaction is pending ingestion.",
+      "confidence": "UNANSWERABLE",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 1478.77,
+      "notes": "Agent honestly declined non-existent record without fabrication"
+    },
+    {
+      "test_id": "TEST-027",
+      "category": "fee_deduction",
+      "question": "What is the net amount for ORD-229-K after MDR fee?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "205044",
+      "actual_answer": "For Order ORD-229-K (Transaction TXN-849205E, Gross: \u20b9210,000.00), the MDR fee deducted is \u20b94,200.00 plus 18% GST tax of \u20b9756.00, resulting in a net payout of \u20b9205,044.00.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849205E"
+      ],
+      "latency_ms": 1741.01,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-028",
+      "category": "exception_handling",
+      "question": "Was there any refund associated with ORD-104-C?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "2000",
+      "actual_answer": "Order ORD-104-C (Transaction TXN-849202B, \u20b98,430.50) is flagged with an exception status. A partial refund of \u20b92,000.00 was recorded. Root cause: Bank UTR amount mismatch due to concurrent partial refund of INR 2000. The transaction is currently held in the exception queue for manual finance ops review.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849202B"
+      ],
+      "latency_ms": 1832.69,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-029",
+      "category": "non_existent_decline",
+      "question": "Why is order #00000 not showing in settlements?",
+      "expected_action": "DECLINE_HONESTLY",
+      "verdict": "CORRECTLY_DECLINED",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "expected_answer_snippet": "no matching",
+      "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-00000. Please verify the identifier or check if the transaction is pending ingestion.",
+      "confidence": "UNANSWERABLE",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 1768.54,
+      "notes": "Agent honestly declined non-existent record without fabrication"
+    },
+    {
+      "test_id": "TEST-030",
+      "category": "matched_lookup",
+      "question": "What was the settlement date for TXN-849201A?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "2023-10-24",
+      "actual_answer": "The settlement date for Order ORD-992-B (Transaction TXN-849201A) was 2023-10-24. Gross amount: \u20b9124,500.00, Net payout: \u20b9121,561.80.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849201A"
+      ],
+      "latency_ms": 1879.22,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-031",
+      "category": "verifier_accurate_grounding",
+      "question": "Verify the gross amount, MDR fee, and settlement cycle for order ORD-992-B",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "124,500",
+      "actual_answer": "For Order ORD-992-B (Transaction TXN-849201A, Gross: \u20b9124,500.00), the MDR fee deducted is \u20b92,490.00 plus 18% GST tax of \u20b9448.20, resulting in a net payout of \u20b9121,561.80.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849201A"
+      ],
+      "latency_ms": 1912.07,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-032",
+      "category": "verifier_hold_detection",
+      "question": "Verify whether transaction TXN-7701-9921 is available for immediate bank transfer",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "delayed",
+      "actual_answer": "Order ORD-9921 (Transaction TXN-7701-9921, \u20b918,500.00) is currently delayed. Failure reason / hold: Risk hold triggered: High velocity ticket size exceeding standard merchant threshold. Expected settlement date is deferred to 2023-10-26.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-7701-9921"
+      ],
+      "latency_ms": 1428.41,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-033",
+      "category": "verifier_discrepancy_audit",
+      "question": "Verify refund deductions and net settlement on transaction TXN-849202B",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "PARTIALLY_CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "2,000",
+      "actual_answer": "For Order ORD-104-C (Transaction TXN-849202B, Gross: \u20b98,430.50), the MDR fee deducted is \u20b9168.61 plus 18% GST tax of \u20b930.35, resulting in a net payout of \u20b98,231.54.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849202B"
+      ],
+      "latency_ms": 1990.33,
+      "notes": "Partial match on details or citations"
+    },
+    {
+      "test_id": "TEST-034",
+      "category": "verifier_non_existent_check",
+      "question": "Verify settlement batch for non-existent order ORD-55555",
+      "expected_action": "DECLINE_HONESTLY",
+      "verdict": "CORRECTLY_DECLINED",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "Verified honest declination for non-existent database entity.",
+      "expected_answer_snippet": "no matching",
+      "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-55555. Please verify the identifier or check if the transaction is pending ingestion.",
+      "confidence": "UNANSWERABLE",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 1667.78,
+      "notes": "Agent honestly declined non-existent record without fabrication"
+    },
+    {
+      "test_id": "TEST-035",
+      "category": "verifier_unmatched_ledger",
+      "question": "Verify why bank UTR CITI-11234-ZZ was not marked settled in statement reconciliation",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "unmatched",
+      "actual_answer": "Order ORD-811-F (Transaction TXN-849204D, \u20b99,200.75) is unmatched in bank reconciliation. Reason: Nodal bank account credit confirmation missing in bank feed. Bank reference CITI-11234-ZZ was not confirmed in MT940 statement.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849204D"
+      ],
+      "latency_ms": 1735.75,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-036",
+      "category": "verifier_compound_refund_math",
+      "question": "Calculate net payout on transaction TXN-849202B after MDR fee, 18% GST tax, and the \u20b92,000 partial refund",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "PARTIALLY_CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "6,231",
+      "actual_answer": "For Order ORD-104-C (Transaction TXN-849202B, Gross: \u20b98,430.50), the MDR fee deducted is \u20b9168.61 plus 18% GST tax of \u20b930.35, resulting in a net payout of \u20b98,231.54.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849202B"
+      ],
+      "latency_ms": 1466.54,
+      "notes": "Partial match on details or citations"
+    },
+    {
+      "test_id": "TEST-037",
+      "category": "verifier_confusable_order_disambiguation",
+      "question": "Differentiate settlement between order ORD-992-B and order ORD-9921",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "124,500",
+      "actual_answer": "Order ORD-992-B (Transaction TXN-849201A) of \u20b9124,500.00 was successfully settled on 2023-10-24 under settlement batch SETTLE-20231024-001. Bank reference UTR: CHASE-88392-XX. Net amount credited: \u20b9121,561.80.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "TXN-849201A"
+      ],
+      "latency_ms": 1622.86,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-038",
+      "category": "verifier_batch_payout_attribution",
+      "question": "Which transactions contributed to settlement batch SETTLE-20231024-001 and what was the net batch payout?",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "PARTIALLY_CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "expected_answer_snippet": "121,561",
+      "actual_answer": "Settlement Batch SETTLE-20231024-001 was processed on 2023-10-24 with status 'settled'. Total batch gross: \u20b9124,500.00, MDR fees: \u20b92,490.00, GST tax: \u20b9448.20, Net disbursed payout: \u20b9121,561.80. Bank UTR: CHASE-88392-XX.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [
+        "SETTLE-20231024-001"
+      ],
+      "latency_ms": 1802.4,
+      "notes": "Partial match on details or citations"
+    }
+  ]
+}

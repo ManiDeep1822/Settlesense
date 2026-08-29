@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+.pytest_cache/
+
+# Environment Variables & Secrets
+.env
+.env.*
+backend/.env
+backend/.env.*
+*.env
+!*.env.example
+!*.env.sample
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+.vite/
+frontend/.vite/
+*.local
+
+# Database & Vector Store
+backend/settlesense.db
+backend/chroma_db/
+chroma_db/
+*.sqlite3
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
