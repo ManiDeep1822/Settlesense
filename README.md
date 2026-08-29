@@ -23,7 +23,6 @@ SettleSense is an AI-powered Settlement Q&A Agent and Finance Controller that en
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)**: Technical architecture reference, RAG vs. Text-to-SQL comparison, two-agent verification design, and the Grounding vs. Completeness boundary.
 - **[DECISIONS.md](DECISIONS.md)**: Architectural decision log covering 7 key engineering decisions and trade-offs.
-- **[demo-script.md](demo-script.md)**: 5-minute pitch video walkthrough script highlighting clean queries, exception handling, and the live verifier audit.
 
 ---
 
@@ -102,12 +101,6 @@ python backend/scripts/test_verifier_catches_errors.py
 
 ### Step 5: Start Backend & Frontend
 
-#### Option A: One-Click Startup (PowerShell)
-```powershell
-.\start_settlesense.ps1
-```
-
-#### Option B: Separate Terminals
 **Terminal 1 — Backend (Port 8000)**:
 ```powershell
 python run_backend.py
@@ -162,8 +155,6 @@ RAZORPAY/
 │   └── tailwind.config.js
 ├── ARCHITECTURE.md              # Technical defense & system architecture reference
 ├── DECISIONS.md                 # Architectural decision log (7 logged decisions)
-├── demo-script.md               # 5-minute video pitch & presentation guide
-├── start_settlesense.ps1        # PowerShell one-click startup script
 ├── run_backend.py               # Standalone backend launcher
 ├── requirements.txt             # Root Python dependencies
 ├── .env.example                 # Environment variables template (safe placeholders)

@@ -1,13 +1,13 @@
 {
-  "id": "RUN-F2C2844D",
-  "run_timestamp": "2026-08-29 19:37:41",
+  "id": "RUN-53D84796",
+  "run_timestamp": "2026-08-29 20:01:14",
   "total_tests": 38,
   "passed": 25,
   "correctly_declined": 8,
   "partially_passed": 5,
   "failed": 0,
   "accuracy_percentage": 86.84,
-  "avg_latency_ms": 1733.55,
+  "avg_latency_ms": 2537.32,
   "verifier_performance": {
     "total_audits": 38,
     "verified_count": 38,
@@ -32,7 +32,7 @@
       "correctly_declined": 8,
       "failed": 0,
       "accuracy_percentage": 86.84,
-      "avg_latency_ms": 1733.55
+      "avg_latency_ms": 2537.32
     }
   },
   "category_breakdown": {
@@ -188,7 +188,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1900.94,
+      "latency_ms": 1897.98,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -208,7 +208,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1363.02,
+      "latency_ms": 2055.53,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -228,7 +228,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1749.26,
+      "latency_ms": 2151.3,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -248,7 +248,7 @@
       "cited_record_ids": [
         "TXN-849203C"
       ],
-      "latency_ms": 1743.74,
+      "latency_ms": 2407.0,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -268,7 +268,7 @@
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 1700.06,
+      "latency_ms": 2032.21,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -288,7 +288,7 @@
       "cited_record_ids": [
         "TXN-849205E"
       ],
-      "latency_ms": 1516.19,
+      "latency_ms": 2635.73,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -308,7 +308,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 1711.63,
+      "latency_ms": 2146.64,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -326,7 +326,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1978.63,
+      "latency_ms": 2340.46,
       "notes": "Agent honestly declined non-existent record without fabrication"
     },
     {
@@ -344,7 +344,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1540.25,
+      "latency_ms": 2765.36,
       "notes": "Agent honestly declined non-existent record without fabrication"
     },
     {
@@ -362,7 +362,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1688.36,
+      "latency_ms": 2761.49,
       "notes": "Agent honestly declined non-existent record without fabrication"
     },
     {
@@ -386,7 +386,7 @@
         "TXN-7118-10112",
         "TXN-6320-10530"
       ],
-      "latency_ms": 2834.04,
+      "latency_ms": 4300.58,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -406,7 +406,7 @@
       "cited_record_ids": [
         "TXN-7950-10410"
       ],
-      "latency_ms": 1936.24,
+      "latency_ms": 2974.58,
       "notes": "Partial match on details or citations"
     },
     {
@@ -426,7 +426,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1786.71,
+      "latency_ms": 2706.37,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -446,7 +446,7 @@
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 1258.8,
+      "latency_ms": 2415.8,
       "notes": "Partial match on details or citations"
     },
     {
@@ -466,7 +466,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1791.67,
+      "latency_ms": 2320.43,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -484,7 +484,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1703.11,
+      "latency_ms": 2524.18,
       "notes": "Agent honestly declined non-existent record without fabrication"
     },
     {
@@ -504,7 +504,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1653.83,
+      "latency_ms": 2366.54,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -524,7 +524,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1248.59,
+      "latency_ms": 2814.47,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -544,7 +544,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1708.67,
+      "latency_ms": 2357.44,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -562,7 +562,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1795.56,
+      "latency_ms": 2227.83,
       "notes": "Agent honestly declined non-existent record without fabrication"
     },
     {
@@ -582,7 +582,7 @@
       "cited_record_ids": [
         "TXN-849203C"
       ],
-      "latency_ms": 1644.76,
+      "latency_ms": 3006.33,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -602,7 +602,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 1258.85,
+      "latency_ms": 2243.49,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -622,7 +622,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 2097.52,
+      "latency_ms": 2683.83,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -642,7 +642,7 @@
       "cited_record_ids": [
         "TXN-849205E"
       ],
-      "latency_ms": 1915.26,
+      "latency_ms": 2860.71,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -662,7 +662,7 @@
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 2022.74,
+      "latency_ms": 2698.98,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -680,7 +680,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1478.77,
+      "latency_ms": 2468.99,
       "notes": "Agent honestly declined non-existent record without fabrication"
     },
     {
@@ -700,7 +700,7 @@
       "cited_record_ids": [
         "TXN-849205E"
       ],
-      "latency_ms": 1741.01,
+      "latency_ms": 2392.1,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -720,7 +720,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1832.69,
+      "latency_ms": 2620.06,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -738,7 +738,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1768.54,
+      "latency_ms": 2378.65,
       "notes": "Agent honestly declined non-existent record without fabrication"
     },
     {
@@ -758,7 +758,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1879.22,
+      "latency_ms": 2166.87,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -778,7 +778,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1912.07,
+      "latency_ms": 2457.56,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -798,7 +798,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 1428.41,
+      "latency_ms": 2254.21,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -818,7 +818,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1990.33,
+      "latency_ms": 2251.66,
       "notes": "Partial match on details or citations"
     },
     {
@@ -836,7 +836,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1667.78,
+      "latency_ms": 2357.01,
       "notes": "Agent honestly declined non-existent record without fabrication"
     },
     {
@@ -856,7 +856,7 @@
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 1735.75,
+      "latency_ms": 3599.52,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -876,7 +876,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1466.54,
+      "latency_ms": 2233.52,
       "notes": "Partial match on details or citations"
     },
     {
@@ -896,7 +896,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1622.86,
+      "latency_ms": 2665.35,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -916,7 +916,7 @@
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 1802.4,
+      "latency_ms": 2877.35,
       "notes": "Partial match on details or citations"
     }
   ]

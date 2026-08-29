@@ -40,3 +40,8 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+# Local Utilities & Demo Scripts (Excluded from Git Repo)
+start_settlesense.ps1
+*.ps1
+demo-script.md
