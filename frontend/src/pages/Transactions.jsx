@@ -12,6 +12,17 @@ export default function Transactions({ onAskAboutTransaction }) {
   const [maxAmount, setMaxAmount] = useState('')
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
+  const [askingId, setAskingId] = useState(null)
+
+  const handleAskClick = (e, t) => {
+    e.stopPropagation()
+    if (askingId) return
+    setAskingId(t.id)
+    if (onAskAboutTransaction) {
+      onAskAboutTransaction(`What is the settlement breakdown and status for transaction ${t.id} (Order ${t.order_ref})?`)
+    }
+    setTimeout(() => setAskingId(null), 1000)
+  }
 
   const loadData = async (targetPage = page) => {
     setLoading(true)
@@ -210,12 +221,13 @@ export default function Transactions({ onAskAboutTransaction }) {
                     </td>
                     <td className="py-3.5 px-4 text-center">
                       <button
-                        onClick={() => onAskAboutTransaction && onAskAboutTransaction(`What is the settlement breakdown and status for transaction ${t.id} (Order ${t.order_ref})?`)}
-                        className="text-primary hover:bg-primary/10 px-2 py-1 rounded text-xs font-semibold transition-colors flex items-center gap-1 mx-auto"
+                        onClick={(e) => handleAskClick(e, t)}
+                        disabled={Boolean(askingId)}
+                        className="text-primary hover:bg-primary/10 px-2 py-1 rounded text-xs font-semibold transition-colors flex items-center gap-1 mx-auto disabled:opacity-50"
                         title="Ask SettleSense about this transaction"
                       >
                         <span className="material-symbols-outlined text-[14px]">chat_bubble</span>
-                        Ask AI
+                        {askingId === t.id ? 'Opening...' : 'Ask AI'}
                       </button>
                     </td>
                   </tr>

@@ -82,3 +82,17 @@
      - **"Settled" queries**: Query `settlements` for batches (`WHERE status = 'settled'`) and join or report the 275 settled transactions across the 262 disbursement batches.
   2. Implement an independent `verify_aggregate_answer` verification routine in `verifier.py` that executes a separate independent SQLite query and validates that the reported transaction counts and gross sums in the primary response match the database before assigning the `VERIFIED` verdict.
 * **Rationale**: Eliminates contradictory counts and guarantees mathematical grounding for aggregate financial queries.
+
+---
+
+### Decision 10: Deduplicated Initial Query Execution and UI Click Guards
+* **Date**: 2026-08-29
+* **Context**: Clicking "Ask AI" on the Transactions page previously triggered two consecutive `/query` HTTP POST calls in development environments.
+* **Root Cause Diagnosis**:
+  1. React 18 `<React.StrictMode>` mounts, unmounts, and remounts components on initial render in development mode to verify side-effect cleanup.
+  2. The `useEffect` in `AskSettlements.jsx` was listening to `[initialQuery]`, firing `handleSend(initialQuery)` on each mount lifecycle.
+  3. Because `handleSend` is asynchronous, `isLoading` remained `false` during the initial synchronous remount, allowing the second request to proceed.
+* **Decision**:
+  1. Implement a `lastHandledInitialQueryRef` reference in `AskSettlements.jsx` that records the string value of the dispatched query and ignores redundant mount events for identical queries.
+  2. Add an `askingId` debounce lock and `e.stopPropagation()` in `Transactions.jsx` to prevent rapid double-clicks on table action buttons.
+* **Rationale**: Eliminates duplicate network traffic, guarantees idempotency for component transitions, and protects against rapid user double-clicks across all environments.

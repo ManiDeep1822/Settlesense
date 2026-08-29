@@ -43,8 +43,11 @@ export default function AskSettlements({ initialQuery }) {
     return () => clearInterval(timer)
   }, [isLoading])
 
+  const lastHandledInitialQueryRef = useRef(null)
+
   useEffect(() => {
-    if (initialQuery) {
+    if (initialQuery && lastHandledInitialQueryRef.current !== initialQuery) {
+      lastHandledInitialQueryRef.current = initialQuery
       handleSend(initialQuery)
     }
   }, [initialQuery])
