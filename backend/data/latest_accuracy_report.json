@@ -1,19 +1,19 @@
 {
-  "id": "RUN-9EAEA6BD",
-  "run_timestamp": "2026-08-29 20:45:58",
-  "total_tests": 42,
-  "passed": 21,
+  "id": "RUN-7098273C",
+  "run_timestamp": "2026-08-29 20:54:44",
+  "total_tests": 45,
+  "passed": 24,
   "correctly_declined": 9,
   "partially_passed": 9,
   "failed": 3,
-  "accuracy_percentage": 82.14,
-  "avg_latency_ms": 1594.52,
+  "accuracy_percentage": 83.33,
+  "avg_latency_ms": 1377.87,
   "verifier_performance": {
-    "total_audits": 42,
-    "verified_count": 40,
+    "total_audits": 45,
+    "verified_count": 42,
     "minor_discrepancy_count": 0,
     "flagged_count": 0,
-    "agreement_rate_percent": 71.43,
+    "agreement_rate_percent": 93.33,
     "catch_rate_percent": 100.0,
     "false_flag_rate_percent": 0.0
   },
@@ -27,12 +27,12 @@
       "avg_latency_ms": 0.0
     },
     "fallback": {
-      "total": 42,
-      "passed": 21,
+      "total": 45,
+      "passed": 24,
       "correctly_declined": 9,
       "failed": 3,
-      "accuracy_percentage": 82.14,
-      "avg_latency_ms": 1594.52
+      "accuracy_percentage": 83.33,
+      "avg_latency_ms": 1377.87
     }
   },
   "category_breakdown": {
@@ -94,16 +94,16 @@
     },
     "aggregation_payouts": {
       "total": 1,
-      "passed": 0,
+      "passed": 1,
       "correctly_declined": 0,
-      "partially_passed": 1,
+      "partially_passed": 0,
       "failed": 0
     },
     "aggregation_matched": {
       "total": 1,
-      "passed": 1,
+      "passed": 0,
       "correctly_declined": 0,
-      "partially_passed": 0,
+      "partially_passed": 1,
       "failed": 0
     },
     "bank_utr_lookup": {
@@ -170,15 +170,15 @@
       "failed": 0
     },
     "intent_greeting": {
-      "total": 1,
-      "passed": 1,
+      "total": 2,
+      "passed": 2,
       "correctly_declined": 0,
       "partially_passed": 0,
       "failed": 0
     },
     "intent_aggregate_count": {
-      "total": 1,
-      "passed": 1,
+      "total": 2,
+      "passed": 2,
       "correctly_declined": 0,
       "partially_passed": 0,
       "failed": 0
@@ -194,6 +194,13 @@
       "total": 1,
       "passed": 0,
       "correctly_declined": 1,
+      "partially_passed": 0,
+      "failed": 0
+    },
+    "intent_aggregate_sum": {
+      "total": 1,
+      "passed": 1,
+      "correctly_declined": 0,
       "partially_passed": 0,
       "failed": 0
     }
@@ -216,7 +223,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1993.58,
+      "latency_ms": 1438.41,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -236,7 +243,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1542.77,
+      "latency_ms": 1794.7,
       "notes": "Partial match on details or citations"
     },
     {
@@ -256,7 +263,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 2397.37,
+      "latency_ms": 1240.91,
       "notes": "Partial match on details or citations"
     },
     {
@@ -276,7 +283,7 @@
       "cited_record_ids": [
         "TXN-849203C"
       ],
-      "latency_ms": 2366.18,
+      "latency_ms": 2155.29,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -296,7 +303,7 @@
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 2549.46,
+      "latency_ms": 1723.67,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -316,7 +323,7 @@
       "cited_record_ids": [
         "TXN-849205E"
       ],
-      "latency_ms": 2148.33,
+      "latency_ms": 2013.11,
       "notes": "Answer contradicted record or missed expected facts"
     },
     {
@@ -336,7 +343,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 1950.82,
+      "latency_ms": 1514.49,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -354,7 +361,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1939.32,
+      "latency_ms": 1134.96,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -372,7 +379,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1055.41,
+      "latency_ms": 1753.93,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -392,7 +399,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1683.94,
+      "latency_ms": 2149.24,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -400,38 +407,36 @@
       "category": "aggregation_payouts",
       "question": "What is the total settled payout across all batches?",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "PARTIALLY_CORRECT",
+      "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+      "verifier_notes": "Deterministic SQL aggregation verified against live SQLite database.",
       "expected_answer_snippet": "settled",
-      "actual_answer": "Based on retrieved record SETTLE-20231024-002, amount is \u20b98,430.50 with status 'partial_exception'.",
-      "confidence": "MEDIUM",
+      "actual_answer": "Settlement summary: 262 settlement batches (0 transactions) have successfully settled. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
+      "confidence": "HIGH",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
-      "cited_record_ids": [
-        "SETTLE-20231024-002"
-      ],
-      "latency_ms": 2185.14,
-      "notes": "Partial match on details or citations"
+      "cited_record_ids": [],
+      "latency_ms": 3.46,
+      "notes": "Accurate reasoning grounded in cited database records"
     },
     {
       "test_id": "TEST-012",
       "category": "aggregation_matched",
       "question": "Summarize today's matched deposits",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "CORRECT",
+      "verdict": "PARTIALLY_CORRECT",
       "verifier_verdict": "VERIFIED",
       "verifier_notes": "Deterministic SQL aggregation verified against live SQLite database.",
       "expected_answer_snippet": "matched",
-      "actual_answer": "Matched deposit summary: 262 settlement batches (0 transactions) have successfully settled. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
+      "actual_answer": "Settlement summary: 262 settlement batches (0 transactions) have successfully settled. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
       "confidence": "HIGH",
       "engine_used": "fallback",
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1.9,
-      "notes": "Accurate reasoning grounded in cited database records"
+      "latency_ms": 2.21,
+      "notes": "Partial match on details or citations"
     },
     {
       "test_id": "TEST-013",
@@ -450,7 +455,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1529.11,
+      "latency_ms": 1841.55,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -470,7 +475,7 @@
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 1462.52,
+      "latency_ms": 1637.41,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -488,7 +493,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1457.11,
+      "latency_ms": 1393.74,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -506,7 +511,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1485.01,
+      "latency_ms": 1911.08,
       "notes": "Answer contradicted record or missed expected facts"
     },
     {
@@ -526,7 +531,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 2036.2,
+      "latency_ms": 1439.0,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -546,7 +551,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 1231.71,
+      "latency_ms": 1530.18,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -566,7 +571,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1538.17,
+      "latency_ms": 1839.1,
       "notes": "Partial match on details or citations"
     },
     {
@@ -584,7 +589,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1842.57,
+      "latency_ms": 1754.32,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -604,7 +609,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 2364.78,
+      "latency_ms": 1522.88,
       "notes": "Partial match on details or citations"
     },
     {
@@ -622,7 +627,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1944.01,
+      "latency_ms": 1919.23,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -642,7 +647,7 @@
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 1681.78,
+      "latency_ms": 1851.54,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -660,7 +665,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 2041.07,
+      "latency_ms": 1557.11,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -680,7 +685,7 @@
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 1486.39,
+      "latency_ms": 1431.72,
       "notes": "Partial match on details or citations"
     },
     {
@@ -700,7 +705,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1634.74,
+      "latency_ms": 2092.88,
       "notes": "Partial match on details or citations"
     },
     {
@@ -718,7 +723,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1850.38,
+      "latency_ms": 2152.08,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -738,7 +743,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1701.52,
+      "latency_ms": 2005.1,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -758,7 +763,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1958.77,
+      "latency_ms": 1326.09,
       "notes": "Partial match on details or citations"
     },
     {
@@ -778,7 +783,7 @@
       "cited_record_ids": [
         "TXN-849203C"
       ],
-      "latency_ms": 1714.8,
+      "latency_ms": 1967.53,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -798,7 +803,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1805.03,
+      "latency_ms": 1918.71,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -818,7 +823,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 1725.71,
+      "latency_ms": 2257.13,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -838,7 +843,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1794.15,
+      "latency_ms": 1431.87,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -856,7 +861,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1526.52,
+      "latency_ms": 1436.88,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -876,7 +881,7 @@
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 1901.49,
+      "latency_ms": 1530.77,
       "notes": "Partial match on details or citations"
     },
     {
@@ -896,7 +901,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 2043.98,
+      "latency_ms": 2068.43,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -916,7 +921,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1801.37,
+      "latency_ms": 1492.63,
       "notes": "Answer contradicted record or missed expected facts"
     },
     {
@@ -936,7 +941,7 @@
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 1594.3,
+      "latency_ms": 1767.11,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -954,13 +959,13 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.05,
+      "latency_ms": 0.07,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
       "test_id": "TEST-040",
       "category": "intent_aggregate_count",
-      "question": "How many transactions are there in the database?",
+      "question": "How many transactions are there totally?",
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
@@ -972,7 +977,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1.19,
+      "latency_ms": 1.28,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -990,7 +995,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.91,
+      "latency_ms": 0.75,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -1008,8 +1013,62 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.07,
+      "latency_ms": 0.27,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
+    },
+    {
+      "test_id": "TEST-043",
+      "category": "intent_aggregate_sum",
+      "question": "Sum up all matched transactions",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "Deterministic SQL aggregation verified against live SQLite database.",
+      "expected_answer_snippet": "settled",
+      "actual_answer": "Settlement summary: 262 settlement batches (0 transactions) have successfully settled. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 0.5,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-044",
+      "category": "intent_aggregate_count",
+      "question": "Give me a count of settled orders",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "Deterministic SQL aggregation verified against live SQLite database.",
+      "expected_answer_snippet": "settled",
+      "actual_answer": "Settlement summary: 262 settlement batches (0 transactions) have successfully settled. Total gross volume: \u20b910,128,999.91, MDR fees deducted: \u20b9184,650.03, GST tax: \u20b933,237.05, and total net disbursed payout: \u20b99,911,112.83.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 0.59,
+      "notes": "Accurate reasoning grounded in cited database records"
+    },
+    {
+      "test_id": "TEST-045",
+      "category": "intent_greeting",
+      "question": "Hello",
+      "expected_action": "ANSWER_WITH_REASON",
+      "verdict": "CORRECT",
+      "verifier_verdict": "NONE",
+      "verifier_notes": "Greeting/conversational query. No factual ledger claims made.",
+      "expected_answer_snippet": "settlesense",
+      "actual_answer": "Hello! I am SettleSense, your AI Settlement Finance Controller. I can help you investigate transaction statuses, explain settlement delays or risk holds, calculate MDR fee and GST deductions, reconcile bank UTR numbers, and summarize payout batches.\n\nTo get started, please ask a question with an Order ID (e.g. #4521), Transaction ID (e.g. TXN-8894-4521), Settlement Batch ID (e.g. SETTLE-20231024-001), or an aggregate question like 'What is my total pending payout?'.",
+      "confidence": "HIGH",
+      "engine_used": "fallback",
+      "engine_used_primary": "fallback",
+      "engine_used_verifier": "fallback",
+      "cited_record_ids": [],
+      "latency_ms": 0.03,
+      "notes": "Accurate reasoning grounded in cited database records"
     }
   ]
 }

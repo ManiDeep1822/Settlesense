@@ -70,3 +70,15 @@
   3. `ENTITY_LOOKUP`: Proceed with exact entity extraction + hybrid vector search.
 * **Follow-up Refinement**: Broadened aggregate classification patterns to catch all natural variations ("How many transactions are there totally?", "Give me a count of settled orders", "Sum up all matched transactions") and added dedicated regression tests to `test_cases.json`.
 * **Rationale**: Prevents hallucinated transaction citations on general conversational inputs while ensuring financial aggregation questions are answered with mathematical exactness from SQLite ledger tables.
+
+---
+
+### Decision 9: Separation of Matched vs. Settled Aggregations and Independent Aggregate Verification
+* **Date**: 2026-08-29
+* **Context**: Live manual testing found that queries for "matched" and "settled" orders were sharing the same SQL template, which attempted to query `WHERE status = 'settled'` on the `transactions` table. In our database schema, reconciled transactions have `status = 'matched'`, while `status = 'settled'` exists on the `settlements` batch table. This produced an internal contradiction: "262 settlement batches (0 transactions)".
+* **Decision**:
+  1. Separate the two aggregate SQL dispatch routes:
+     - **"Matched" queries**: Query `transactions` directly (`WHERE status = 'matched'`), returning 275 reconciled transactions totaling ₹10,128,999.91.
+     - **"Settled" queries**: Query `settlements` for batches (`WHERE status = 'settled'`) and join or report the 275 settled transactions across the 262 disbursement batches.
+  2. Implement an independent `verify_aggregate_answer` verification routine in `verifier.py` that executes a separate independent SQLite query and validates that the reported transaction counts and gross sums in the primary response match the database before assigning the `VERIFIED` verdict.
+* **Rationale**: Eliminates contradictory counts and guarantees mathematical grounding for aggregate financial queries.

@@ -10,7 +10,7 @@ from backend.app.config import GEMINI_API_KEY, GEMINI_MODEL
 from backend.app.database import get_db_connection
 from backend.app.retrieval import retrieve_hybrid_context, extract_query_entities, classify_query_intent
 from backend.app.schemas import QueryResponse, CitedRecord
-from backend.app.verifier import verify_settlement_answer
+from backend.app.verifier import verify_settlement_answer, verify_aggregate_answer
 
 SYSTEM_PROMPT = """You are SettleSense, an AI Settlement Q&A Agent and Finance Controller.
 Your mission is to answer merchant questions regarding transactions, settlements, payouts, fees, deductions, and reconciliation issues.
@@ -77,10 +77,34 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
             "exception_reason": None
         }
 
-    if "matched" in lowered or "settled" in lowered or "how much did we settle" in lowered or "settle" in lowered:
+    if "matched" in lowered:
+        cursor.execute("""
+            SELECT COUNT(*) as m_count, SUM(amount) as m_gross, SUM(fee) as m_fees, SUM(tax) as m_tax, SUM(net_amount) as m_net 
+            FROM transactions 
+            WHERE status = 'matched'
+        """)
+        mrow = cursor.fetchone()
+        m_count = mrow["m_count"] or 0
+        m_gross = mrow["m_gross"] or 0.0
+        m_fees = mrow["m_fees"] or 0.0
+        m_tax = mrow["m_tax"] or 0.0
+        m_net = mrow["m_net"] or 0.0
+        conn.close()
+
+        return {
+            "answer": f"Matched transactions summary: There are {m_count} reconciled matched transactions in the ledger totaling ₹{m_gross:,.2f} in gross volume (MDR fees: ₹{m_fees:,.2f}, GST tax: ₹{m_tax:,.2f}, Net payout: ₹{m_net:,.2f}).",
+            "confidence": "HIGH",
+            "confidence_score": 0.99,
+            "cited_record_ids": [],
+            "exception_detected": False,
+            "exception_type": None,
+            "exception_reason": None
+        }
+
+    if "settled" in lowered or "how much did we settle" in lowered or "settle" in lowered:
         cursor.execute("SELECT COUNT(*) as s_count, SUM(total_amount) as s_gross, SUM(fees_deducted) as s_fees, SUM(tax_deducted) as s_tax, SUM(net_payout) as s_net FROM settlements WHERE status = 'settled'")
         srow = cursor.fetchone()
-        cursor.execute("SELECT COUNT(*) as t_count, SUM(amount) as t_gross, SUM(fee) as t_fees, SUM(tax) as t_tax, SUM(net_amount) as t_net FROM transactions WHERE status = 'settled'")
+        cursor.execute("SELECT COUNT(*) as t_count FROM transactions WHERE status = 'matched'")
         trow = cursor.fetchone()
         s_count = srow["s_count"] or 0
         s_gross = srow["s_gross"] or 0.0
@@ -91,7 +115,7 @@ def handle_aggregate_query(query: str) -> Dict[str, Any]:
         conn.close()
 
         return {
-            "answer": f"Settlement summary: {s_count} settlement batches ({t_count} transactions) have successfully settled. Total gross volume: ₹{s_gross:,.2f}, MDR fees deducted: ₹{s_fees:,.2f}, GST tax: ₹{s_tax:,.2f}, and total net disbursed payout: ₹{s_net:,.2f}.",
+            "answer": f"Settlement batch summary: {s_count} settlement batches containing {t_count} settled transactions have successfully disbursed. Total gross volume: ₹{s_gross:,.2f}, MDR fees deducted: ₹{s_fees:,.2f}, GST tax: ₹{s_tax:,.2f}, and total net disbursed payout: ₹{s_net:,.2f}.",
             "confidence": "HIGH",
             "confidence_score": 0.99,
             "cited_record_ids": [],
@@ -412,6 +436,7 @@ def process_settlement_query(query: str, merchant_id: Optional[str] = None) -> Q
 
     if intent == "AGGREGATE_QUERY":
         agg_result = handle_aggregate_query(query)
+        v_audit = verify_aggregate_answer(query, agg_result["answer"])
         latency_ms = round((time.time() - start_time) * 1000, 2)
         return QueryResponse(
             answer=agg_result["answer"],
@@ -420,9 +445,9 @@ def process_settlement_query(query: str, merchant_id: Optional[str] = None) -> Q
             engine_used="fallback",
             engine_used_primary="fallback",
             engine_used_verifier="fallback",
-            verifier_verdict="VERIFIED",
-            verifier_notes="Deterministic SQL aggregation verified against live SQLite database.",
-            discrepancies=[],
+            verifier_verdict=v_audit.get("verdict", "VERIFIED"),
+            verifier_notes=v_audit.get("verification_notes", "Deterministic SQL aggregation verified against live SQLite database."),
+            discrepancies=v_audit.get("discrepancies", []),
             cited_records=[],
             cited_record_ids=[],
             exception_detected=agg_result.get("exception_detected", False),

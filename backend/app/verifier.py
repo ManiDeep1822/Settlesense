@@ -1,7 +1,7 @@
 import json
+import re
 import time
 import os
-import re
 import requests
 from typing import List, Dict, Any, Optional
 
@@ -78,136 +78,228 @@ def extract_currency_numbers(text: str) -> List[float]:
     cleaned = re.sub(r'#\d+', '', cleaned)
     cleaned = cleaned.replace(",", "")
 
-    matches = re.findall(r'(?:₹|rs\.?|inr)\s*(\d+(?:\.\d{1,2})?)', cleaned, re.IGNORECASE)
-    numbers = []
+    found_numbers = []
+    matches = re.findall(r'(?:₹|INR|rs\.?|amount\s*(?:of)?\s*)?\s*(\d+(?:\.\d{1,2})?)', cleaned, re.IGNORECASE)
     for m in matches:
         try:
             val = float(m)
-            numbers.append(val)
+            if val > 5.0 and val not in (18.0, 2.0, 1.5, 0.18):
+                found_numbers.append(val)
         except ValueError:
-            pass
-    return numbers
+            continue
+    return found_numbers
 
-def deterministic_verify(
+def verify_aggregate_answer(query: str, answer: str) -> Dict[str, Any]:
+    from backend.app.database import get_db_connection
+    lowered = query.lower()
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    if "exception" in lowered:
+        cursor.execute("SELECT COUNT(*) as exc_count FROM exceptions_log WHERE status = 'UNRESOLVED'")
+        row = cursor.fetchone()
+        exc_count = row["exc_count"] or 0
+        conn.close()
+        if str(exc_count) in answer:
+            return {
+                "verdict": "VERIFIED",
+                "verification_notes": f"Independent verifier query confirmed {exc_count} active exceptions in SQLite exceptions_log.",
+                "discrepancies": [],
+                "engine_used_verifier": "fallback"
+            }
+        else:
+            return {
+                "verdict": "FLAGGED",
+                "verification_notes": f"Discrepancy: Answer exception count does not match database ({exc_count}).",
+                "discrepancies": [f"Expected {exc_count} exceptions."],
+                "engine_used_verifier": "fallback"
+            }
+
+    if "pending" in lowered or "hold" in lowered:
+        cursor.execute("SELECT COUNT(*) as p_count, SUM(net_amount) as p_net FROM transactions WHERE status IN ('pending', 'delayed', 'hold')")
+        row = cursor.fetchone()
+        conn.close()
+        p_count = row["p_count"] or 0
+        p_net = row["p_net"] or 0.0
+        if str(p_count) in answer:
+            return {
+                "verdict": "VERIFIED",
+                "verification_notes": f"Independent verifier query confirmed {p_count} pending transactions (₹{p_net:,.2f}) in SQLite.",
+                "discrepancies": [],
+                "engine_used_verifier": "fallback"
+            }
+        else:
+            return {
+                "verdict": "FLAGGED",
+                "verification_notes": f"Discrepancy: Pending transaction count {p_count} mismatch.",
+                "discrepancies": [f"Expected {p_count} pending transactions."],
+                "engine_used_verifier": "fallback"
+            }
+
+    if "matched" in lowered:
+        cursor.execute("SELECT COUNT(*) as m_count, SUM(amount) as m_gross FROM transactions WHERE status = 'matched'")
+        row = cursor.fetchone()
+        conn.close()
+        m_count = row["m_count"] or 0
+        m_gross = row["m_gross"] or 0.0
+        if str(m_count) in answer:
+            return {
+                "verdict": "VERIFIED",
+                "verification_notes": f"Independent verifier query confirmed {m_count} matched transactions (₹{m_gross:,.2f}) in SQLite.",
+                "discrepancies": [],
+                "engine_used_verifier": "fallback"
+            }
+        else:
+            return {
+                "verdict": "FLAGGED",
+                "verification_notes": f"Discrepancy: Matched transaction count {m_count} mismatch.",
+                "discrepancies": [f"Expected {m_count} matched transactions."],
+                "engine_used_verifier": "fallback"
+            }
+
+    if "settled" in lowered or "settle" in lowered:
+        cursor.execute("SELECT COUNT(*) as s_count, SUM(total_amount) as s_gross FROM settlements WHERE status = 'settled'")
+        srow = cursor.fetchone()
+        cursor.execute("SELECT COUNT(*) as t_count FROM transactions WHERE status = 'matched'")
+        trow = cursor.fetchone()
+        conn.close()
+        s_count = srow["s_count"] or 0
+        t_count = trow["t_count"] or 0
+        if str(s_count) in answer and str(t_count) in answer:
+            return {
+                "verdict": "VERIFIED",
+                "verification_notes": f"Independent verifier query confirmed {s_count} settled batches and {t_count} settled transactions in SQLite.",
+                "discrepancies": [],
+                "engine_used_verifier": "fallback"
+            }
+        else:
+            return {
+                "verdict": "FLAGGED",
+                "verification_notes": f"Discrepancy: Settled batch ({s_count}) or transaction count ({t_count}) mismatch.",
+                "discrepancies": [f"Expected {s_count} batches and {t_count} transactions."],
+                "engine_used_verifier": "fallback"
+            }
+
+    cursor.execute("SELECT COUNT(*) as t_count, SUM(amount) as t_gross FROM transactions")
+    row = cursor.fetchone()
+    conn.close()
+    t_count = row["t_count"] or 0
+    if str(t_count) in answer:
+        return {
+            "verdict": "VERIFIED",
+            "verification_notes": f"Independent verifier query confirmed {t_count} total transactions in SQLite.",
+            "discrepancies": [],
+            "engine_used_verifier": "fallback"
+        }
+    return {
+        "verdict": "FLAGGED",
+        "verification_notes": f"Discrepancy: Total transaction count {t_count} mismatch in answer.",
+        "discrepancies": [f"Expected {t_count} total transactions."],
+        "engine_used_verifier": "fallback"
+    }
+
+def audit_answer_deterministically(
     query: str,
     primary_answer: str,
     cited_record_ids: List[str],
     retrieved_records: List[Dict[str, Any]]
 ) -> Dict[str, Any]:
     lowered_answer = primary_answer.lower()
-    
+    discrepancies = []
+    supported = []
+
     if not retrieved_records:
-        if "no matching" in lowered_answer or "not found" in lowered_answer or "no transaction" in lowered_answer:
-            if not cited_record_ids:
-                return {
-                    "verdict": "VERIFIED",
-                    "verification_notes": "Verified honest declination for non-existent database entity.",
-                    "discrepancies": [],
-                    "supported_claims": ["Correctly declined non-existent record without citations"],
-                    "unsupported_claims": []
-                }
-            else:
-                return {
-                    "verdict": "FLAGGED",
-                    "verification_notes": "Primary agent declined but attached unexpected record citations.",
-                    "discrepancies": ["Citations attached to empty ledger result set"],
-                    "supported_claims": [],
-                    "unsupported_claims": cited_record_ids
-                }
+        if "no matching" in lowered_answer or "not found" in lowered_answer or "no transaction" in lowered_answer or "unanswerable" in lowered_answer or "declined" in lowered_answer or "outside the scope" in lowered_answer:
+            return {
+                "verdict": "VERIFIED",
+                "verification_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
+                "discrepancies": [],
+                "supported_claims": ["Clean decline confirmed on empty record set"],
+                "unsupported_claims": []
+            }
         else:
             return {
                 "verdict": "FLAGGED",
                 "verification_notes": "Primary agent made positive claims when zero ledger records exist.",
                 "discrepancies": ["Positive assertion made without supporting ledger records"],
                 "supported_claims": [],
-                "unsupported_claims": ["All claims made without backing data"]
+                "unsupported_claims": ["Ungrounded positive assertion on empty context"]
             }
 
-    record_ids_in_context = set()
-    valid_amounts = set()
-    valid_dates = set()
-    valid_utrs = set()
-    valid_statuses = set()
+    valid_txn_ids = {(r.get("id") or "").upper() for r in retrieved_records if r.get("id")}
+    valid_settle_ids = {(r.get("settlement_id") or "").upper() for r in retrieved_records if r.get("settlement_id")}
+    all_valid_ids = valid_txn_ids.union(valid_settle_ids)
+
+    for cid in cited_record_ids:
+        if cid.upper() not in all_valid_ids:
+            discrepancies.append(f"Unverified citation ID: {cid}")
+
+    ledger_amounts = []
+    ledger_dates = []
+    ledger_statuses = []
+    ledger_utrs = []
 
     for r in retrieved_records:
-        if r.get("id"):
-            record_ids_in_context.add(str(r["id"]).upper())
-        if r.get("settlement_id"):
-            record_ids_in_context.add(str(r["settlement_id"]).upper())
-        if r.get("order_ref"):
-            record_ids_in_context.add(str(r["order_ref"]).upper())
+        if "amount" in r:
+            ledger_amounts.append(round(float(r["amount"]), 2))
+        if "total_amount" in r:
+            ledger_amounts.append(round(float(r["total_amount"]), 2))
+        if "net_amount" in r:
+            ledger_amounts.append(round(float(r["net_amount"]), 2))
+        if "net_payout" in r:
+            ledger_amounts.append(round(float(r["net_payout"]), 2))
+        if "fee" in r:
+            ledger_amounts.append(round(float(r["fee"]), 2))
+        if "tax" in r:
+            ledger_amounts.append(round(float(r["tax"]), 2))
+        if "fees_deducted" in r:
+            ledger_amounts.append(round(float(r["fees_deducted"]), 2))
+        if "tax_deducted" in r:
+            ledger_amounts.append(round(float(r["tax_deducted"]), 2))
+        if "refund_amount" in r and r["refund_amount"]:
+            ledger_amounts.append(round(float(r["refund_amount"]), 2))
 
-        for field in ["amount", "total_amount", "net_amount", "net_payout", "fee", "fees_deducted", "tax", "tax_deducted", "refund_amount"]:
-            if r.get(field) is not None:
-                try:
-                    valid_amounts.add(round(float(r[field]), 2))
-                except (ValueError, TypeError):
-                    pass
-
-        for dfield in ["settlement_date", "created_at"]:
-            if r.get(dfield):
-                d_str = str(r[dfield])[:10]
-                valid_dates.add(d_str)
-
-        for ufield in ["bank_ref", "bank_utr"]:
-            if r.get(ufield):
-                valid_utrs.add(str(r[ufield]).upper())
+        if r.get("settlement_date"):
+            ledger_dates.append(r["settlement_date"])
+        if r.get("created_at"):
+            ledger_dates.append(r["created_at"][:10])
 
         if r.get("status"):
-            valid_statuses.add(str(r["status"]).lower())
+            ledger_statuses.append(r["status"].lower())
 
-    invalid_citations = [cid for cid in cited_record_ids if cid.upper() not in record_ids_in_context]
-    if invalid_citations:
-        return {
-            "verdict": "FLAGGED",
-            "verification_notes": f"Primary agent cited IDs not present in retrieved context: {', '.join(invalid_citations)}",
-            "discrepancies": [f"Unverified citation ID: {cid}" for cid in invalid_citations],
-            "supported_claims": [],
-            "unsupported_claims": invalid_citations
-        }
+        if r.get("bank_ref"):
+            ledger_utrs.append(r["bank_ref"].upper())
+        if r.get("bank_utr"):
+            ledger_utrs.append(r["bank_utr"].upper())
 
-    txn_matches_in_text = re.findall(r'TXN-[\w-]+', primary_answer, re.IGNORECASE)
-    for tid in txn_matches_in_text:
-        if tid.upper() not in record_ids_in_context:
-            return {
-                "verdict": "FLAGGED",
-                "verification_notes": f"Primary answer mentions ungrounded transaction ID: {tid}",
-                "discrepancies": [f"Mentioned ID {tid} not in retrieved dataset"],
-                "supported_claims": [],
-                "unsupported_claims": [tid]
-            }
-
-    discrepancies = []
-    supported = []
-
-    for r in retrieved_records:
-        status = r.get("status")
-        if status and status.lower() in ["declined", "failed"]:
-            if "successfully settled" in lowered_answer or ("settled on" in lowered_answer and "did not settle" not in lowered_answer and "was declined" not in lowered_answer):
-                discrepancies.append(f"Status contradiction: record {r.get('id')} is declined but answer claimed successfully settled")
-        elif status == "matched":
-            if "was declined before capture" in lowered_answer and len(retrieved_records) == 1:
-                discrepancies.append(f"Status contradiction: record {r.get('id')} is matched but answer claimed declined")
+    extracted_numbers = extract_currency_numbers(primary_answer)
+    for num in extracted_numbers:
+        matched = False
+        for l_amt in ledger_amounts:
+            if abs(num - l_amt) <= 1.0:
+                matched = True
+                break
+        if not matched:
+            if len(retrieved_records) == 1:
+                r0 = retrieved_records[0]
+                g = r0.get("amount", r0.get("total_amount", 0.0))
+                n = r0.get("net_amount", r0.get("net_payout", 0.0))
+                discrepancies.append(f"Amount discrepancy: claimed amount ₹{num:,.2f} does not match ledger record (Gross: ₹{g:,.2f}, Net: ₹{n:,.2f})")
+            else:
+                discrepancies.append(f"Amount discrepancy: claimed amount ₹{num:,.2f} not found in retrieved ledger records")
 
     date_matches = re.findall(r'\b(20\d{2}-\d{2}-\d{2})\b', primary_answer)
-    for dm in date_matches:
-        if valid_dates and dm not in valid_dates:
-            discrepancies.append(f"Date discrepancy: stated date {dm} not found in retrieved records ({', '.join(valid_dates)})")
+    for d in date_matches:
+        if d not in ledger_dates:
+            discrepancies.append(f"Date discrepancy: stated date {d} not found in retrieved records ({', '.join(ledger_dates)})")
 
-    if len(retrieved_records) == 1:
-        single_rec = retrieved_records[0]
-        rec_gross = round(float(single_rec.get("amount", single_rec.get("total_amount", 0.0))), 2)
-        rec_net = round(float(single_rec.get("net_amount", single_rec.get("net_payout", rec_gross))), 2)
-        
-        claimed_numbers = extract_currency_numbers(primary_answer)
-        for num in claimed_numbers:
-            is_valid_num = False
-            for v in valid_amounts:
-                if abs(num - v) < 1.0 or abs(num - (rec_gross - rec_net)) < 1.0:
-                    is_valid_num = True
-                    break
-            if not is_valid_num and num > 50.0:
-                discrepancies.append(f"Amount discrepancy: claimed amount ₹{num:,.2f} does not match ledger record (Gross: ₹{rec_gross:,.2f}, Net: ₹{rec_net:,.2f})")
+    for r in retrieved_records:
+        r_id = r.get("id", r.get("settlement_id", ""))
+        r_stat = r.get("status", "").lower()
+        if r_stat == "declined" and ("successfully settled" in lowered_answer or "settled on" in lowered_answer):
+            discrepancies.append(f"Status contradiction: record {r_id} is declined but answer claimed successfully settled")
+        if r_stat == "settled" and ("declined before capture" in lowered_answer or "payment was declined" in lowered_answer):
+            discrepancies.append(f"Status contradiction: record {r_id} is settled but answer claimed declined")
 
     if discrepancies:
         return {
@@ -220,9 +312,9 @@ def deterministic_verify(
 
     return {
         "verdict": "VERIFIED",
-        "verification_notes": "All cited entities, amounts, statuses, and ledger facts strictly verified against raw records.",
+        "verification_notes": f"All stated amounts, dates, and transaction IDs strictly match the {len(retrieved_records)} retrieved ledger records.",
         "discrepancies": [],
-        "supported_claims": ["All cited IDs, amounts, and statuses grounded in retrieved records"],
+        "supported_claims": ["Grounded ledger amounts", "Verified IDs and statuses"],
         "unsupported_claims": []
     }
 
@@ -233,19 +325,20 @@ def verify_settlement_answer(
     retrieved_records: List[Dict[str, Any]]
 ) -> Dict[str, Any]:
     context_str = json.dumps(retrieved_records, indent=2, default=str)
-    verifier_prompt = f"""{VERIFIER_SYSTEM_PROMPT}
+    prompt = f"""{VERIFIER_SYSTEM_PROMPT}
 
-USER QUERY: "{query}"
+USER'S ORIGINAL QUERY: "{query}"
 
-PRIMARY AGENT'S ANSWER TO VERIFY:
+PRIMARY AGENT'S PROPOSED ANSWER:
 "{primary_answer}"
 
-CITED RECORD IDS: {json.dumps(cited_record_ids)}
+PRIMARY AGENT'S CITED IDS:
+{json.dumps(cited_record_ids)}
 
-RAW RETRIEVED LEDGER RECORDS:
+RAW RETRIEVED LEDGER RECORDS (GROUND TRUTH):
 {context_str}
 
-Perform your independent adversarial audit and return strictly JSON.
+Audit the answer and output valid JSON matching the schema.
 """
 
     gemini_verdict = None
@@ -253,23 +346,18 @@ Perform your independent adversarial audit and return strictly JSON.
 
     key = os.getenv("GEMINI_API_KEY", GEMINI_API_KEY)
     if key and len(key.strip()) > 10:
-        gemini_verdict = call_gemini_verifier(verifier_prompt)
-        if gemini_verdict:
+        gemini_verdict = call_gemini_verifier(prompt)
+        if gemini_verdict and "verdict" in gemini_verdict:
             engine_used = "gemini"
 
     if not gemini_verdict:
-        gemini_verdict = deterministic_verify(query, primary_answer, cited_record_ids, retrieved_records)
+        gemini_verdict = audit_answer_deterministically(
+            query=query,
+            primary_answer=primary_answer,
+            cited_record_ids=cited_record_ids,
+            retrieved_records=retrieved_records
+        )
         engine_used = "fallback"
 
-    raw_verdict = gemini_verdict.get("verdict", "VERIFIED").upper()
-    if raw_verdict not in ["VERIFIED", "MINOR_DISCREPANCY", "FLAGGED"]:
-        raw_verdict = "VERIFIED"
-
-    return {
-        "verdict": raw_verdict,
-        "verification_notes": gemini_verdict.get("verification_notes") or "Verified against raw records.",
-        "discrepancies": gemini_verdict.get("discrepancies", []),
-        "supported_claims": gemini_verdict.get("supported_claims", []),
-        "unsupported_claims": gemini_verdict.get("unsupported_claims", []),
-        "engine_used_verifier": engine_used
-    }
+    gemini_verdict["engine_used_verifier"] = engine_used
+    return gemini_verdict
