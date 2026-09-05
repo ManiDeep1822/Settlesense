@@ -1,39 +1,39 @@
 {
-  "id": "RUN-B1DB84B2",
-  "run_timestamp": "2026-08-29 21:07:39",
+  "id": "RUN-E71B81C7",
+  "run_timestamp": "2026-09-05 18:02:59",
   "total_tests": 45,
-  "passed": 21,
+  "passed": 25,
   "correctly_declined": 9,
-  "partially_passed": 12,
+  "partially_passed": 8,
   "failed": 3,
-  "accuracy_percentage": 80.0,
-  "avg_latency_ms": 1416.71,
+  "accuracy_percentage": 84.44,
+  "avg_latency_ms": 5217.2,
   "verifier_performance": {
     "total_audits": 45,
-    "verified_count": 35,
+    "verified_count": 36,
     "minor_discrepancy_count": 0,
-    "flagged_count": 7,
+    "flagged_count": 6,
     "no_audit_needed_count": 3,
-    "agreement_rate_percent": 82.22,
+    "agreement_rate_percent": 84.44,
     "catch_rate_percent": 100.0,
     "false_flag_rate_percent": 0.0
   },
   "engine_breakdown": {
     "gemini": {
-      "total": 0,
-      "passed": 0,
-      "correctly_declined": 0,
+      "total": 8,
+      "passed": 6,
+      "correctly_declined": 2,
       "failed": 0,
-      "accuracy_percentage": 0.0,
-      "avg_latency_ms": 0.0
+      "accuracy_percentage": 100.0,
+      "avg_latency_ms": 12387.03
     },
     "fallback": {
-      "total": 45,
-      "passed": 21,
-      "correctly_declined": 9,
+      "total": 37,
+      "passed": 19,
+      "correctly_declined": 7,
       "failed": 3,
-      "accuracy_percentage": 80.0,
-      "avg_latency_ms": 1416.71
+      "accuracy_percentage": 81.08,
+      "avg_latency_ms": 3666.96
     }
   },
   "category_breakdown": {
@@ -46,16 +46,16 @@
     },
     "matched_lookup": {
       "total": 5,
-      "passed": 0,
+      "passed": 2,
       "correctly_declined": 0,
-      "partially_passed": 4,
+      "partially_passed": 2,
       "failed": 1
     },
     "exception_handling": {
       "total": 3,
-      "passed": 0,
+      "passed": 1,
       "correctly_declined": 0,
-      "partially_passed": 3,
+      "partially_passed": 2,
       "failed": 0
     },
     "pending_payout": {
@@ -109,9 +109,9 @@
     },
     "bank_utr_lookup": {
       "total": 2,
-      "passed": 0,
+      "passed": 1,
       "correctly_declined": 0,
-      "partially_passed": 2,
+      "partially_passed": 1,
       "failed": 0
     },
     "verifier_accurate_grounding": {
@@ -214,17 +214,17 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
+      "verifier_notes": "All claims regarding order #4521 not settling, its associated transaction ID (TXN-8894-4521), its 'declined' status, and the specific failure reason (billing zip code mismatch flagged by processor; declined by issuing bank) are directly supported by the raw ledger records.",
       "expected_answer_snippet": "zip code",
-      "actual_answer": "Order ORD-4521 (Transaction TXN-8894-4521, \u20b91,450.00) did not settle because it was declined before capture. Reason: Billing zip code mismatch flagged by processor; declined by issuing bank. No settlement funds were collected or queued for disbursement.",
+      "actual_answer": "Order #4521 did not settle yesterday because the associated transaction, TXN-8894-4521, was declined. The reason for the decline was a billing zip code mismatch flagged by the processor and subsequently rejected by the issuing bank.",
       "confidence": "HIGH",
-      "engine_used": "fallback",
-      "engine_used_primary": "fallback",
-      "engine_used_verifier": "fallback",
+      "engine_used": "gemini",
+      "engine_used_primary": "gemini",
+      "engine_used_verifier": "gemini",
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 2174.04,
+      "latency_ms": 10896.65,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -232,20 +232,21 @@
       "category": "matched_lookup",
       "question": "What is the settlement status of ORD-992-B?",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "PARTIALLY_CORRECT",
+      "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
+      "verifier_notes": "All claims made by the primary agent regarding Order #ORD-992-B (TXN-849201A) are fully supported by the raw ledger records. The net amount, settlement date, settlement batch ID, and settlement status are accurate and directly match the provided ground truth.",
       "expected_answer_snippet": "settled",
-      "actual_answer": "Based on retrieved record TXN-849201A, amount is \u20b9124,500.00 with status 'matched'.",
-      "confidence": "MEDIUM",
-      "engine_used": "fallback",
-      "engine_used_primary": "fallback",
-      "engine_used_verifier": "fallback",
+      "actual_answer": "The transaction for Order #ORD-992-B (TXN-849201A) has been successfully settled. The net amount of \u20b91,21,561.80 was settled on 2023-10-24 as part of settlement batch SETTLE-20231024-001. This settlement followed a T+1 cycle.",
+      "confidence": "HIGH",
+      "engine_used": "gemini",
+      "engine_used_primary": "gemini",
+      "engine_used_verifier": "gemini",
       "cited_record_ids": [
-        "TXN-849201A"
+        "TXN-849201A",
+        "SETTLE-20231024-001"
       ],
-      "latency_ms": 2453.88,
-      "notes": "Partial match on details or citations"
+      "latency_ms": 11788.13,
+      "notes": "Accurate reasoning grounded in cited database records"
     },
     {
       "test_id": "TEST-003",
@@ -264,7 +265,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 2571.48,
+      "latency_ms": 3911.06,
       "notes": "Partial match on details or citations"
     },
     {
@@ -284,7 +285,7 @@
       "cited_record_ids": [
         "TXN-849203C"
       ],
-      "latency_ms": 2400.36,
+      "latency_ms": 5075.95,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -304,7 +305,7 @@
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 2718.41,
+      "latency_ms": 5209.84,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -324,7 +325,7 @@
       "cited_record_ids": [
         "TXN-849205E"
       ],
-      "latency_ms": 1766.56,
+      "latency_ms": 3411.93,
       "notes": "Answer contradicted record or missed expected facts"
     },
     {
@@ -344,7 +345,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 2556.9,
+      "latency_ms": 2706.5,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -362,7 +363,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 2195.73,
+      "latency_ms": 4175.55,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -372,15 +373,15 @@
       "expected_action": "DECLINE_HONESTLY",
       "verdict": "CORRECTLY_DECLINED",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
+      "verifier_notes": "The primary agent correctly stated that no transaction or settlement records were found for the given transaction ID, which is fully consistent with the empty raw ledger records provided.",
       "expected_answer_snippet": "no matching",
-      "actual_answer": "I reviewed the settlement database but found no matching entry for Transaction TXN-000000-FAKE. Please verify the identifier or check if the transaction is pending ingestion.",
+      "actual_answer": "No transaction or settlement records found for transaction ID TXN-000000-FAKE in the settlement database.",
       "confidence": "UNANSWERABLE",
-      "engine_used": "fallback",
-      "engine_used_primary": "fallback",
-      "engine_used_verifier": "fallback",
+      "engine_used": "gemini",
+      "engine_used_primary": "gemini",
+      "engine_used_verifier": "gemini",
       "cited_record_ids": [],
-      "latency_ms": 1937.57,
+      "latency_ms": 10205.41,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -390,17 +391,17 @@
       "expected_action": "ANSWER_WITH_REASON",
       "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
+      "verifier_notes": "All monetary amounts (fee, tax, net amount) and the associated order reference (ORD-992-B) are precisely matched and confirmed by the cited transaction record TXN-849201A in the raw ledger.",
       "expected_answer_snippet": "2490",
-      "actual_answer": "For Order ORD-992-B (Transaction TXN-849201A, Gross: \u20b9124,500.00), the MDR fee deducted is \u20b92,490.00 plus 18% GST tax of \u20b9448.20, resulting in a net payout of \u20b9121,561.80.",
+      "actual_answer": "For Order #ORD-992-B, a fee of \u20b92,490.00 and a tax of \u20b9448.20 were charged. The total net amount settled for this transaction was \u20b91,21,561.80. This information is based on transaction record TXN-849201A.",
       "confidence": "HIGH",
-      "engine_used": "fallback",
-      "engine_used_primary": "fallback",
-      "engine_used_verifier": "fallback",
+      "engine_used": "gemini",
+      "engine_used_primary": "gemini",
+      "engine_used_verifier": "gemini",
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1661.51,
+      "latency_ms": 12660.03,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -422,7 +423,7 @@
         "SETTLE-20231101-BATCH66",
         "SETTLE-20231101-BATCH46"
       ],
-      "latency_ms": 1.55,
+      "latency_ms": 7.38,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -444,7 +445,7 @@
         "TXN-4105-10748",
         "TXN-1687-10674"
       ],
-      "latency_ms": 1.21,
+      "latency_ms": 3.97,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -452,20 +453,21 @@
       "category": "bank_utr_lookup",
       "question": "What is the UTR for transaction TXN-849201A?",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "PARTIALLY_CORRECT",
-      "verifier_verdict": "FLAGGED",
-      "verifier_notes": "Amount discrepancy: claimed amount \u20b988,392.00 does not match ledger record (Gross: \u20b9124,500.00, Net: \u20b9121,561.80)",
+      "verdict": "CORRECT",
+      "verifier_verdict": "VERIFIED",
+      "verifier_notes": "All details provided by the primary agent, including the Bank UTR (CHASE-88392-XX), net amount (\u20b91,21,561.80), settlement date (2023-10-24), and settlement batch ID (SETTLE-20231024-001) for transaction TXN-849201A, are 100% accurate and directly match the raw ledger records.",
       "expected_answer_snippet": "chase-88392-xx",
-      "actual_answer": "\u26a0 Verification Notice: The independent Verifier Agent flagged a potential ledger inconsistency (Amount discrepancy: claimed amount \u20b988,392.00 does not match ledger record (Gross: \u20b9124,500.00, Net: \u20b9121,561.80)). This inquiry has been routed to the Exceptions Ledger for manual finance ops review.",
-      "confidence": "LOW",
-      "engine_used": "fallback",
-      "engine_used_primary": "fallback",
-      "engine_used_verifier": "fallback",
+      "actual_answer": "The Bank UTR (Unique Transaction Reference) for transaction ID TXN-849201A is CHASE-88392-XX. This transaction, with a net amount of \u20b91,21,561.80, was settled on 2023-10-24 as part of settlement batch SETTLE-20231024-001.",
+      "confidence": "HIGH",
+      "engine_used": "gemini",
+      "engine_used_primary": "gemini",
+      "engine_used_verifier": "gemini",
       "cited_record_ids": [
-        "TXN-849201A"
+        "TXN-849201A",
+        "SETTLE-20231024-001"
       ],
-      "latency_ms": 1611.0,
-      "notes": "Partial match on details or citations"
+      "latency_ms": 11335.82,
+      "notes": "Accurate reasoning grounded in cited database records"
     },
     {
       "test_id": "TEST-014",
@@ -484,7 +486,7 @@
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 1544.04,
+      "latency_ms": 13323.13,
       "notes": "Partial match on details or citations"
     },
     {
@@ -502,7 +504,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1378.88,
+      "latency_ms": 2908.1,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -520,7 +522,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1770.1,
+      "latency_ms": 2732.94,
       "notes": "Answer contradicted record or missed expected facts"
     },
     {
@@ -540,7 +542,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1505.51,
+      "latency_ms": 3170.97,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -560,7 +562,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 1437.63,
+      "latency_ms": 3288.36,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -568,20 +570,20 @@
       "category": "exception_handling",
       "question": "What is the dispute status on transaction TXN-849202B?",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "PARTIALLY_CORRECT",
+      "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
+      "verifier_notes": "All claims made by the primary agent regarding transaction TXN-849202B, including its dispute status, transaction status, failure reason, refund details, original amount, and net amount, are 100% accurate and directly supported by the provided raw ledger records.",
       "expected_answer_snippet": "refund",
-      "actual_answer": "Based on retrieved record TXN-849202B, amount is \u20b98,430.50 with status 'exception'.",
-      "confidence": "MEDIUM",
-      "engine_used": "fallback",
-      "engine_used_primary": "fallback",
-      "engine_used_verifier": "fallback",
+      "actual_answer": "The dispute status for transaction ID TXN-849202B is currently 'under review'. This transaction is marked with an 'exception' status due to a 'Bank UTR amount mismatch' which occurred because a partial refund of \u20b92,000.00 was processed concurrently before the batch settlement closure. The original transaction amount was \u20b98,430.50, with a net amount of \u20b98,231.54 after fees and taxes.",
+      "confidence": "HIGH",
+      "engine_used": "gemini",
+      "engine_used_primary": "gemini",
+      "engine_used_verifier": "gemini",
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1545.29,
-      "notes": "Partial match on details or citations"
+      "latency_ms": 11141.0,
+      "notes": "Accurate reasoning grounded in cited database records"
     },
     {
       "test_id": "TEST-020",
@@ -590,15 +592,15 @@
       "expected_action": "DECLINE_HONESTLY",
       "verdict": "CORRECTLY_DECLINED",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "Primary agent correctly and cleanly declined answering with zero ledger hallucinations.",
+      "verifier_notes": "The primary agent correctly stated that no transaction or settlement records were found for Order #ORD-777-MISSING, which is fully consistent with the provided empty raw ledger records.",
       "expected_answer_snippet": "no matching",
-      "actual_answer": "I reviewed the settlement database but found no matching entry for Order ORD-777-MISSING. Please verify the identifier or check if the transaction is pending ingestion.",
+      "actual_answer": "No transaction or settlement records found for Order #ORD-777-MISSING in the settlement database.",
       "confidence": "UNANSWERABLE",
-      "engine_used": "fallback",
-      "engine_used_primary": "fallback",
-      "engine_used_verifier": "fallback",
+      "engine_used": "gemini",
+      "engine_used_primary": "gemini",
+      "engine_used_verifier": "gemini",
       "cited_record_ids": [],
-      "latency_ms": 1872.47,
+      "latency_ms": 15452.61,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -606,20 +608,21 @@
       "category": "matched_lookup",
       "question": "Explain net payout calculation for transaction TXN-849201A",
       "expected_action": "ANSWER_WITH_REASON",
-      "verdict": "PARTIALLY_CORRECT",
+      "verdict": "CORRECT",
       "verifier_verdict": "VERIFIED",
-      "verifier_notes": "All stated amounts, dates, and transaction IDs strictly match the 1 retrieved ledger records.",
+      "verifier_notes": "All details regarding the transaction amount, fees, taxes, net payout calculation, settlement date, and settlement ID for TXN-849201A are accurately stated and directly match the provided raw ledger record.",
       "expected_answer_snippet": "121561",
-      "actual_answer": "Based on retrieved record TXN-849201A, amount is \u20b9124,500.00 with status 'matched'.",
-      "confidence": "MEDIUM",
-      "engine_used": "fallback",
-      "engine_used_primary": "fallback",
-      "engine_used_verifier": "fallback",
+      "actual_answer": "The net payout for transaction TXN-849201A is calculated by deducting the applicable fees and taxes from the original transaction amount. For TXN-849201A, the original amount was \u20b91,24,500.00. A fee of \u20b92,490.00 and a tax of \u20b9448.20 were applied. Therefore, the net payout is calculated as \u20b91,24,500.00 (Amount) - \u20b92,490.00 (Fee) - \u20b9448.20 (Tax) = \u20b91,21,561.80. This transaction was settled on 2023-10-24 as part of settlement batch SETTLE-20231024-001.",
+      "confidence": "HIGH",
+      "engine_used": "gemini",
+      "engine_used_primary": "gemini",
+      "engine_used_verifier": "gemini",
       "cited_record_ids": [
-        "TXN-849201A"
+        "TXN-849201A",
+        "SETTLE-20231024-001"
       ],
-      "latency_ms": 1427.4,
-      "notes": "Partial match on details or citations"
+      "latency_ms": 15616.6,
+      "notes": "Accurate reasoning grounded in cited database records"
     },
     {
       "test_id": "TEST-022",
@@ -636,7 +639,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1439.35,
+      "latency_ms": 23864.16,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -656,7 +659,7 @@
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 2289.0,
+      "latency_ms": 17856.6,
       "notes": "Partial match on details or citations"
     },
     {
@@ -674,7 +677,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1489.85,
+      "latency_ms": 5360.61,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -694,7 +697,7 @@
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 1710.53,
+      "latency_ms": 3390.11,
       "notes": "Partial match on details or citations"
     },
     {
@@ -714,7 +717,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1565.85,
+      "latency_ms": 3013.08,
       "notes": "Partial match on details or citations"
     },
     {
@@ -732,7 +735,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1837.5,
+      "latency_ms": 2624.93,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -752,7 +755,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1430.93,
+      "latency_ms": 2912.39,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -772,7 +775,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1642.21,
+      "latency_ms": 2788.19,
       "notes": "Partial match on details or citations"
     },
     {
@@ -792,7 +795,7 @@
       "cited_record_ids": [
         "TXN-849203C"
       ],
-      "latency_ms": 2405.74,
+      "latency_ms": 2483.9,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -812,7 +815,7 @@
       "cited_record_ids": [
         "TXN-8894-4521"
       ],
-      "latency_ms": 1328.27,
+      "latency_ms": 2499.67,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -832,7 +835,7 @@
       "cited_record_ids": [
         "TXN-7701-9921"
       ],
-      "latency_ms": 1669.97,
+      "latency_ms": 3135.0,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -852,7 +855,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1737.57,
+      "latency_ms": 2863.6,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -870,7 +873,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 1229.61,
+      "latency_ms": 2705.92,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -890,7 +893,7 @@
       "cited_record_ids": [
         "TXN-849204D"
       ],
-      "latency_ms": 1148.65,
+      "latency_ms": 2725.03,
       "notes": "Partial match on details or citations"
     },
     {
@@ -910,7 +913,7 @@
       "cited_record_ids": [
         "TXN-849202B"
       ],
-      "latency_ms": 1461.58,
+      "latency_ms": 2517.27,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -930,7 +933,7 @@
       "cited_record_ids": [
         "TXN-849201A"
       ],
-      "latency_ms": 1577.74,
+      "latency_ms": 2516.91,
       "notes": "Answer contradicted record or missed expected facts"
     },
     {
@@ -950,7 +953,7 @@
       "cited_record_ids": [
         "SETTLE-20231024-001"
       ],
-      "latency_ms": 1243.18,
+      "latency_ms": 2452.51,
       "notes": "Partial match on details or citations"
     },
     {
@@ -968,7 +971,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.08,
+      "latency_ms": 0.24,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -990,7 +993,7 @@
         "TXN-4105-10748",
         "TXN-1687-10674"
       ],
-      "latency_ms": 3.07,
+      "latency_ms": 6.58,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -1012,7 +1015,7 @@
         "TXN-9981-10462",
         "TXN-2773-10192"
       ],
-      "latency_ms": 3.47,
+      "latency_ms": 6.29,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -1030,7 +1033,7 @@
       "engine_used_primary": "fallback",
       "engine_used_verifier": "fallback",
       "cited_record_ids": [],
-      "latency_ms": 0.54,
+      "latency_ms": 0.84,
       "notes": "Agent honestly declined non-existent or out-of-scope inquiry without fabrication"
     },
     {
@@ -1052,7 +1055,7 @@
         "TXN-4105-10748",
         "TXN-1687-10674"
       ],
-      "latency_ms": 3.07,
+      "latency_ms": 24.16,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
@@ -1074,7 +1077,7 @@
         "SETTLE-20231101-BATCH66",
         "SETTLE-20231101-BATCH46"
       ],
-      "latency_ms": 2.42,
+      "latency_ms": 3.92,
       "notes": "Accurate reasoning grounded in cited database records"
     },
     {
